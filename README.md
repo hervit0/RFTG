@@ -1,2 +1,2 @@
 # RFTG
-Develop Race For The Galaxy game
+Race For The Galaxy game
