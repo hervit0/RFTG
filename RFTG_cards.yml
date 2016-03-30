@@ -1,94 +1,94 @@
 ---
-- card_name: Public Works
-  cost: '1'
-  victory_points: '1'
-- card_name: Colony Ship
-  cost: '2'
-  victory_points: '1'
-- card_name: Expedition Force
-  cost: '1'
-  victory_points: '1'
-- card_name: Mining Robots
-  cost: '2'
-  victory_points: '1'
-- card_name: Export Duties
-  cost: '1'
-  victory_points: '1'
-- card_name: New Military Tactics
-  cost: '1'
-  victory_points: '1'
-- card_name: Space Marines
-  cost: '2'
-  victory_points: '1'
-- card_name: Contact Specialist
-  cost: '1'
-  victory_points: '1'
-- card_name: Diversified Economy
-  cost: '4'
-  victory_points: '2'
-- card_name: Consumer Markets
-  cost: '5'
-  victory_points: '3'
-- card_name: Mining Conglomerate
-  cost: '3'
-  victory_points: '2'
-- card_name: Research Labs
-  cost: '4'
-  victory_points: '2'
-- card_name: Deficit Spending
-  cost: '2'
-  victory_points: '1'
-- card_name: Investment Credits
-  cost: '1'
-  victory_points: '1'
-- card_name: Pan-Galactic League
-  cost: '6'
-  victory_points: '0'
-- card_name: Mining League
-  cost: '6'
-  victory_points: '0'
-- card_name: Free Trade Association
-  cost: '6'
-  victory_points: '0'
-- card_name: Alien Tech Institute
-  cost: '6'
-  victory_points: '0'
-- card_name: 'Galactic Survey: SETI'
-  cost: '6'
-  victory_points: '0'
-- card_name: Galactic Federation
-  cost: '6'
-  victory_points: '0'
-- card_name: Interstellar Bank
-  cost: '2'
-  victory_points: '1'
-- card_name: Terraforming Robots
-  cost: '3'
-  victory_points: '2'
-- card_name: Drop Ships
-  cost: '4'
-  victory_points: '2'
-- card_name: New Galactic Order
-  cost: '6'
-  victory_points: '0'
-- card_name: Merchant Guild
-  cost: '6'
-  victory_points: '0'
-- card_name: Replicant Robots
-  cost: '4'
-  victory_points: '2'
-- card_name: New Economy
-  cost: '6'
-  victory_points: '0'
-- card_name: Genetics Lab
-  cost: '2'
-  victory_points: '1'
-- card_name: Galactic Renaissance
-  cost: '6'
-  victory_points: '0'
-- card_name: Galactic Imperium
-  cost: '6'
-  victory_points: '0'
-- card_name: Trade League
-  cost: '6'
-  victory_points: '0'
+- name: Public Works
+  cost: 1
+  victory_points: 1
+- name: Colony Ship
+  cost: 2
+  victory_points: 1
+- name: Expedition Force
+  cost: 1
+  victory_points: 1
+- name: Mining Robots
+  cost: 2
+  victory_points: 1
+- name: Export Duties
+  cost: 1
+  victory_points: 1
+- name: New Military Tactics
+  cost: 1
+  victory_points: 1
+- name: Space Marines
+  cost: 2
+  victory_points: 1
+- name: Contact Specialist
+  cost: 1
+  victory_points: 1
+- name: Diversified Economy
+  cost: 4
+  victory_points: 2
+- name: Consumer Markets
+  cost: 5
+  victory_points: 3
+- name: Mining Conglomerate
+  cost: 3
+  victory_points: 2
+- name: Research Labs
+  cost: 4
+  victory_points: 2
+- name: Deficit Spending
+  cost: 2
+  victory_points: 1
+- name: Investment Credits
+  cost: 1
+  victory_points: 1
+- name: Pan-Galactic League
+  cost: 6
+  victory_points: 0
+- name: Mining League
+  cost: 6
+  victory_points: 0
+- name: Free Trade Association
+  cost: 6
+  victory_points: 0
+- name: Alien Tech Institute
+  cost: 6
+  victory_points: 0
+- name: 'Galactic Survey: SETI'
+  cost: 6
+  victory_points: 0
+- name: Galactic Federation
+  cost: 6
+  victory_points: 0
+- name: Interstellar Bank
+  cost: 2
+  victory_points: 1
+- name: Terraforming Robots
+  cost: 3
+  victory_points: 2
+- name: Drop Ships
+  cost: 4
+  victory_points: 2
+- name: New Galactic Order
+  cost: 6
+  victory_points: 0
+- name: Merchant Guild
+  cost: 6
+  victory_points: 0
+- name: Replicant Robots
+  cost: 4
+  victory_points: 2
+- name: New Economy
+  cost: 6
+  victory_points: 0
+- name: Genetics Lab
+  cost: 2
+  victory_points: 1
+- name: Galactic Renaissance
+  cost: 6
+  victory_points: 0
+- name: Galactic Imperium
+  cost: 6
+  victory_points: 0
+- name: Trade League
+  cost: 6
+  victory_points: 0
