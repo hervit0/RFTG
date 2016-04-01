@@ -8,10 +8,17 @@ require_relative 'tableau.rb'
 
 PLAYERS_NUMBER = 2
 PLAYERS_NUMBER_MAX = 4
+CARDS = YAML.load(File.read("cards.yml"))
+
+def set_players_names
+  (1..PLAYERS_NUMBER).to_a.map{ |x| p "Write player#{x}'s name:"; gets.chomp}
+end
+
+PLAYERS_NAMES = set_players_names
 
 library = Stack.new(
-  YAML.load(File.read("cards.yml")).map do |item|
-    item = Card.new(item["name"], item["cost"], item["victory_points"])
+  CARDS.map do |item|
+    Card.new(item["name"], item["cost"], item["victory_points"])
   end
 )
 
@@ -38,13 +45,22 @@ def discard(distributions)
 
   discarded_cards = distributions[0].flatten - hands.flatten
 
-  [distributions.last, hands, discarded_cards]
+  stack_after_distribution = distributions.last
+
+  [hands, stack_after_distribution, discarded_cards]
+end
+
+def specify_player(hands, tableaux)
+  (0..PLAYERS_NUMBER-1).map do |i|
+    Player.new(PLAYERS_NAMES[i], hands[i], tableaux[i])
+  end
 end
 
 first_distribution = discard(distribute_cards(library.cards, PLAYERS_NUMBER))
 
-first_stack = Stack.new(first_distribution[0])
-p first_stack.cards
+first_hands = (0..PLAYERS_NUMBER-1).map{ |i| Hand.new(first_distribution[0][i]) }
+first_stack = Stack.new(first_distribution[1])
+first_graveyard = Graveyard.new(first_distribution[2])	
+first_tableaux = (0..PLAYERS_NUMBER-1).map{ |i| Tableau.new([]) }
 
-first_graveyard = Graveyard.new(first_distribution[2])
-p first_graveyard.cards
+players = specify_player(first_hands, first_tableaux)
