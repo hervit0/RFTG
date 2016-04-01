@@ -2,11 +2,14 @@ require 'yaml'
 require_relative 'card.rb'
 require_relative 'stack.rb'
 require_relative 'graveyard.rb'
+require_relative 'hand.rb'
+require_relative 'player.rb'
+require_relative 'tableau.rb'
 
 PLAYERS_NUMBER = 2
 PLAYERS_NUMBER_MAX = 4
 
-first_stack = Stack.new(
+library = Stack.new(
   YAML.load(File.read("cards.yml")).map do |item|
     item = Card.new(item["name"], item["cost"], item["victory_points"])
   end
@@ -38,10 +41,10 @@ def discard(distributions)
   [distributions.last, hands, discarded_cards]
 end
 
-first_distribution = discard(distribute_cards(STACK, PLAYERS_NUMBER))
+first_distribution = discard(distribute_cards(library.cards, PLAYERS_NUMBER))
 
 first_stack = Stack.new(first_distribution[0])
-first_stack.show_cards_stack
+p first_stack.cards
 
 first_graveyard = Graveyard.new(first_distribution[2])
-first_graveyard.show_cards_stack
+p first_graveyard.cards
