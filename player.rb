@@ -2,14 +2,27 @@ require_relative 'tableau.rb'
 require_relative 'hand.rb'
 
 class Player
-  attr_accessor :name, :hand, :tableau
-  def initialize(name, hand, tableau)
-    @name = name
+  attr_reader :hand, :tableau
+  def initialize(hand, tableau)
     @hand = hand
-    @tableau = tableau 
+    @tableau = tableau
   end
 
-  def victory_points 
+  def give_name!
+    p "Give me your name:"
+    @name = gets.chomp
+  end
+
+  def choose_first_cards
+    puts @hand.display
+    puts "Choose first card to discard:"
+    first = gets.chomp.to_i
+    puts "Choose second card to discard:"
+    second = gets.chomp.to_i
+    @hand.remove_card(first, second)
+  end
+
+  def victory_points
     @tableau.cards.reduce(0){ |acc, ite| acc + ite.victory_points }
   end
 end
