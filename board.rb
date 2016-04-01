@@ -3,13 +3,14 @@ require_relative 'card.rb'
 require_relative 'stack.rb'
 require_relative 'graveyard.rb'
 
-STACK = YAML.load(File.read("cards.yml"))
 PLAYERS_NUMBER = 2
 PLAYERS_NUMBER_MAX = 4
 
-stack = YAML.load(File.read("cards.yml")).map do |item|
-  item = Card.new(item["name"], item["cost"], item["victory_points"])
-end
+first_stack = Stack.new(
+  YAML.load(File.read("cards.yml")).map do |item|
+    item = Card.new(item["name"], item["cost"], item["victory_points"])
+  end
+)
 
 def distribute_cards(cards, number_players)
   beginning_hands = cards.sample(number_players * 6).each_slice(6).to_a
