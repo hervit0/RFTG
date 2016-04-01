@@ -1,13 +1,9 @@
 require_relative 'card.rb'
 
 class Stack
-  def initialize(cards_stack)
-    @cards_stack = cards_stack
+  attr_accessor :cards
+  def initialize(cards)
+    @cards = cards
   end
-
-  def show_cards_stack
-    p @cards_stack
-  end
-
   #feature: add graveyard if the stack is empty
 end
