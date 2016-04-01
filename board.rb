@@ -1,4 +1,7 @@
 require 'yaml'
+require_relative 'card.rb'
+require_relative 'stack.rb'
+require_relative 'graveyard.rb'
 
 STACK = YAML.load(File.read("cards.yml"))
 PLAYERS_NUMBER = 2
@@ -10,9 +13,7 @@ def distribute_cards(cards, number_players)
 	[beginning_hands, stack_after_distribution]
 end
 
-def discard
-  distributions = distribute_cards(STACK, PLAYERS_NUMBER)
-
+def discard(distributions)
   hands = distributions[0].map.with_index do |hand, i|
     p "Player#{i+1}'s cards are the following:"
     puts "\n"
@@ -32,23 +33,10 @@ def discard
   [distributions.last, hands, discarded_cards]
 end
 
-class Board
-  def initialize(stack, hands, boards, graveyard)
-    @stack = stack
-    @hands = hands
-    @boards = boards
-    @graveyard = graveyard
-  end
+first_distribution = discard(distribute_cards(STACK, PLAYERS_NUMBER))
 
-  def state
-    p "Number of cards in the stack:"
-    p @stack.length
-    p "Number of cards in the graveyard:"
-    p @graveyard.length
-  end
-end
+first_stack = Stack.new(first_distribution[0])
+first_stack.show_cards_stack
 
-first_distribution = discard
-first_board = Board.new(first_distribution[0], first_distribution[1], [], first_distribution[2])
-
-first_board.state
+first_graveyard = Graveyard.new(first_distribution[2])
+first_graveyard.show_cards_stack
