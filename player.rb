@@ -1,11 +1,13 @@
 require_relative 'tableau.rb'
 require_relative 'hand.rb'
+require_relative 'stack.rb'
 
 class Player
-  attr_reader :hand, :tableau
-  def initialize(hand, tableau)
+  attr_reader :hand, :tableau, :stack
+  def initialize(hand, tableau, stack)
     @hand = hand
     @tableau = tableau
+    @stack = stack
   end
 
   def give_name!
@@ -13,8 +15,15 @@ class Player
     @name = gets.chomp
   end
 
+  def name
+    @name
+  end
+
   def draw(number)
-    @hand.draw_cards(number)
+    drawn = @stack.cards.sample(number)
+    new_stack = Stack.new(@stack.cards - drawn)
+    new_hand = Hand.new(drawn)
+    Player.new(new_hand, @tableau, new_stack)
   end
 
   def choose_first_cards

@@ -3,12 +3,12 @@ require_relative 'player.rb'
 
 class PlayerTest < Minitest::Test
   def test_draw
-    stack = Stack.new([1, 2, 3, 4])
-    hand = Hand.new([], stack)
+    hand = Hand.new([])
     tableau = Tableau.new([])
+    stack = Stack.new([1, 2, 3, 4])
+    player = Player.new(hand, tableau, stack)
 
-    player = Player.new(hand, tableau)
-    assert_equal [1, 2, 3, 4], player.draw(4).cards.sort
+    assert_equal [1, 2, 3, 4], player.draw(4).hand.cards.sort
   end
 
   def test_victory_points
@@ -17,10 +17,10 @@ class PlayerTest < Minitest::Test
     card3 = Card.new("card test 3", 0, 6)
     set = [card1, card2, card3]
 
-    stack = Stack.new([])
-    hand = Hand.new([], stack)
+    hand = Hand.new([])
     tableau = Tableau.new(set)
-    player = Player.new(hand, tableau)
+    stack = Stack.new([])
+    player = Player.new(hand, tableau, stack)
 
     assert_equal 12, player.victory_points
   end
