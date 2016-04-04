@@ -20,9 +20,10 @@ class Player
   end
 
   def draw(number)
-    drawn = @stack.cards.sample(number)
-    new_stack = Stack.new(@stack.cards - drawn)
-    new_hand = Hand.new(drawn)
+    new_stack = @stack.draw_cards(number)
+    new_cards = @stack.cards - new_stack.cards
+    new_hand = @hand.add_cards(new_cards)
+
     Player.new(new_hand, @tableau, new_stack)
   end
 
