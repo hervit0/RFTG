@@ -9,7 +9,7 @@ class Player
   end
 
   def give_name!
-    p "Give me your name:"
+    puts "Give me your name:"
     @name = gets.chomp
   end
 
