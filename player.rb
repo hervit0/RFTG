@@ -13,6 +13,10 @@ class Player
     @name = gets.chomp
   end
 
+  def draw(number)
+    @hand.draw_cards(number)
+  end
+
   def choose_first_cards
     puts @hand.display
     puts "Choose first card to discard:"
