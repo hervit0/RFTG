@@ -16,9 +16,8 @@ class Player
   end
 
   def draw(number, stack)
-    new_stack = stack.draw(number)
-    new_cards = stack.cards - new_stack.cards
-    new_hand = @hand.add_cards(new_cards)
+    new_stack, drawn_cards = stack.draw(number)
+    new_hand = @hand.add_cards(drawn_cards)
 
     [Player.new(new_hand, @tableau), new_stack]
   end
@@ -30,8 +29,7 @@ class Player
     puts "Choose second card to discard:"
     second = gets.chomp.to_i
 
-    new_hand = @hand.remove_cards(first, second)
-    discarded_cards = @hand.cards - new_hand.cards
+    new_hand, discarded_cards = @hand.remove_cards(first, second)
     new_graveyard = graveyard.add_cards(discarded_cards)
 
     [Player.new(new_hand, @tableau), new_graveyard]

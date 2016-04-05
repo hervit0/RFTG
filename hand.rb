@@ -20,6 +20,7 @@ class Hand
   def remove_cards(first, second)
     indexes = (0..@cards.length - 1).to_a - [first - 1] - [second - 1]
     new_cards = @cards.values_at(*indexes)
-    Hand.new(new_cards)
+    discarded_cards = @cards.values_at(first - 1, second - 1)
+    [Hand.new(new_cards), discarded_cards]
   end
 end

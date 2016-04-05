@@ -33,7 +33,7 @@ class PlayerTest < Minitest::Test
     graveyard = Graveyard.new([7])
     player = Player.new(hand, tableau)
 
-    puts "Choose 1 and 2 for test"
+    puts "For test, press 1 then 2"
     new_player, new_graveyard = player.choose_first_cards(graveyard)
 
     assert_equal [3], new_player.hand.cards

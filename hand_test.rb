@@ -15,7 +15,8 @@ class HandTest < Minitest::Test
     cards = [1, 2, 3, 4, 5, 6]
     hand = Hand.new(cards)
 
-    new_hand = hand.remove_cards(1, 2)
+    new_hand, discarded_cards = hand.remove_cards(1, 2)
     assert_equal [3, 4, 5, 6], new_hand.cards
+    assert_equal [1, 2], discarded_cards
   end
 end
