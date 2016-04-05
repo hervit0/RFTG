@@ -2,6 +2,13 @@ require 'minitest/autorun'
 require_relative 'player.rb'
 
 class PlayerTest < Minitest::Test
+  def test_give_name
+    puts "For test, write toto."
+    new_player = Player.new([], [])
+    new_player.give_name!
+    assert_equal "toto", new_player.name
+  end
+
   def test_draw
     hand = Hand.new([])
     tableau = Tableau.new([])

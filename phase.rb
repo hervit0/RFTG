@@ -4,14 +4,8 @@ class Phase
   def initialize(order)
     @order = order
   end
-  
-  PHASES_NAMES = {
-    1 => "explore",
-    2 => "develop",
-    3 => "settle",
-    4 => "consume",
-    5 => "produce"
-  }
+
+  PHASES_NAMES = ["explore", "develop", "settle", "consume", "produce"]
 
   def name
     PHASES_NAMES[@order]

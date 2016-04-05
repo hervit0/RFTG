@@ -13,6 +13,7 @@ class Player
   def give_name!
     puts "Give me your name:"
     @name = gets.chomp
+    Player.new(@hand, @tableau)
   end
 
   def draw(number, stack)
