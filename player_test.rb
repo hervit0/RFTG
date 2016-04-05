@@ -6,9 +6,11 @@ class PlayerTest < Minitest::Test
     hand = Hand.new([])
     tableau = Tableau.new([])
     stack = Stack.new([1, 2, 3, 4])
-    player = Player.new(hand, tableau, stack)
+    player = Player.new(hand, tableau)
 
-    assert_equal [1, 2, 3, 4], player.draw(4).hand.cards.sort
+    new_player, new_stack = player.draw(4, stack)
+
+    assert_equal [1, 2, 3, 4], new_player.hand.cards.sort
   end
 
   def test_victory_points
@@ -20,8 +22,21 @@ class PlayerTest < Minitest::Test
     hand = Hand.new([])
     tableau = Tableau.new(set)
     stack = Stack.new([])
-    player = Player.new(hand, tableau, stack)
+    player = Player.new(hand, tableau)
 
     assert_equal 12, player.victory_points
+  end
+
+  def test_choose_first_cards
+    hand = Hand.new([1, 2, 3])
+    tableau = Tableau.new([])
+    graveyard = Graveyard.new([7])
+    player = Player.new(hand, tableau)
+
+    puts "Choose 1 and 2 for test"
+    new_player, new_graveyard = player.choose_first_cards(graveyard)
+
+    assert_equal [3], new_player.hand.cards
+    assert_equal [7, 1, 2], new_graveyard.cards
   end
 end

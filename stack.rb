@@ -6,7 +6,7 @@ class Stack
     @cards = cards
   end
 
-  def draw_cards(number)
+  def draw(number)
     drawn_cards = @cards.sample(number)
     Stack.new(@cards - drawn_cards)
   end

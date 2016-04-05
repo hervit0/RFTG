@@ -5,4 +5,8 @@ class Graveyard
   def initialize(cards)
     @cards = cards
   end
+
+  def add_cards(cards)
+    Graveyard.new(@cards + cards)
+  end
 end
