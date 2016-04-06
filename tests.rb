@@ -1,4 +1,4 @@
-require_relative 'RFTG_board.rb'
+require_relative 'board.rb'
 require 'minitest/autorun'
 
 class TestBoard < Minitest::Test
