@@ -18,7 +18,7 @@ class Board
   end
 
   def fill_stack(cards)
-    new_stack = @stack.fill(cards)
+    new_stack = Stack.from_cards(cards)
     Board.new(new_stack)
   end
 end

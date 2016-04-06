@@ -6,15 +6,14 @@ class Stack
     @cards = cards
   end
 
-  def fill(cards)
+  def self.from_cards(cards)
     copies = cards.map{ |x| x["quantity"] }
     cards_with_copies = copies.zip(cards).flat_map{ |x, y| Array.new(x, y) }
 
-    extra_cards = cards_with_copies.map.with_index do |item, ind|
-        Card.new(item["name"], ind, item["cost"], item["victory_points"])
+    first_cards = cards_with_copies.map.with_index do |x, i|
+        Card.new(name: x["name"], id: i, cost: x["cost"], victory_points: x["victory_points"])
       end
-
-    Stack.new(@cards + extra_cards)
+    Stack.new(first_cards)
   end
 
   def draw(number)
