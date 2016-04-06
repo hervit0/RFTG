@@ -5,16 +5,16 @@ class StackTest < Minitest::Test
   def test_from_cards
     card1 = {"name"=>"Card 1", "quantity"=>1, "cost"=>0, "victory_points"=>1 }
     card2 = {"name"=>"Card 2", "quantity"=>2, "cost"=>0, "victory_points"=>1 }
-    card3 = {"name"=>"Card 3", "quantity"=>1, "cost"=>0, "victory_points"=>1 }
+    card3 = {"name"=>"Card 3", "quantity"=>1, "cost"=>2, "victory_points"=>3 }
     cards = [card1, card2, card3]
 
     stack = Stack.from_cards(cards)
 
+    assert_equal "Card 3", stack.cards[3].name
+    assert_equal 2, stack.cards[3].cost
+    assert_equal 3, stack.cards[3].victory_points
+    assert_equal 2, stack.cards.map{ |x| x.name }.count("Card 2")
     assert_equal 4, stack.cards.length
-    assert_equal Stack, stack.class
-    stack.cards.map do |x|
-      assert_equal Card, x.class
-    end
   end
 
   def test_draw
