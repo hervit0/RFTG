@@ -1,7 +1,8 @@
 class Card
-  attr_reader :name, :cost, :victory_points
-  def initialize(name, cost, victory_points)
+  attr_reader :name, :id, :cost, :victory_points
+  def initialize(name, id, cost, victory_points)
     @name = name
+    @id = id
     @cost = cost
     @victory_points = victory_points
   end
