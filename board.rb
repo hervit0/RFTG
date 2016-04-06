@@ -13,12 +13,12 @@ CARDS = YAML.load(File.read("cards.yml"))
 
 class Board
   attr_reader :stack
-  def initialize(stack:)
+  def initialize(stack)
     @stack = stack
   end
 
-  def fill_stack(cards:)
-    new_stack = @stack.fill(cards: cards)
-    Board.new(stack: new_stack)
+  def fill_stack(cards)
+    new_stack = @stack.fill(cards)
+    Board.new(new_stack)
   end
 end
