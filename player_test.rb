@@ -3,9 +3,9 @@ require_relative 'player.rb'
 
 class PlayerTest < Minitest::Test
   def test_draw
-    card1 = Card.new("card test 1", 1, 0, 2)
-    card2 = Card.new("card test 2", 2, 0, 4)
-    card3 = Card.new("card test 3", 3, 0, 6)
+    card1 = Card.new(name: "card test 1", id: 1, cost: 0, victory_points: 2)
+    card2 = Card.new(name: "card test 2", id: 2, cost: 0, victory_points: 4)
+    card3 = Card.new(name: "card test 3", id: 3, cost: 0, victory_points: 6)
     cards  = [card1, card2, card3]
 
     stack = Stack.new(cards)
@@ -21,13 +21,13 @@ class PlayerTest < Minitest::Test
   end
 
   def test_victory_points
-    card1 = Card.new("card test 1", 1, 0, 2)
-    card2 = Card.new("card test 2", 2, 0, 4)
-    card3 = Card.new("card test 3", 3, 0, 6)
-    set = [card1, card2, card3]
+    card1 = Card.new(name: "card test 1", id: 1, cost: 0, victory_points: 2)
+    card2 = Card.new(name: "card test 2", id: 2, cost: 0, victory_points: 4)
+    card3 = Card.new(name: "card test 3", id: 3, cost: 0, victory_points: 6)
+    cards = [card1, card2, card3]
 
     hand = Hand.new([])
-    tableau = Tableau.new(set)
+    tableau = Tableau.new(cards)
     stack = Stack.new([])
     player = Player.new("player", hand, tableau)
 
@@ -40,7 +40,7 @@ class PlayerTest < Minitest::Test
     graveyard = Graveyard.new([7])
     player = Player.new("player", hand, tableau)
 
-    puts "For test, press 1 then 2"
+    puts "FOR TEST, PRESS 1 THEN 2"
     new_player, new_graveyard = player.choose_first_cards(graveyard)
 
     assert_equal [3], new_player.hand.cards

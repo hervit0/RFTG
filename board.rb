@@ -16,9 +16,4 @@ class Board
   def initialize(stack)
     @stack = stack
   end
-
-  def fill_stack(cards)
-    new_stack = Stack.from_cards(cards)
-    Board.new(new_stack)
-  end
 end

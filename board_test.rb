@@ -2,20 +2,20 @@ require 'minitest/autorun'
 require_relative 'board.rb'
 
 class BoardTest < Minitest::Test
-  def test_fill_stack
+  def test_board_creation
     card1 = {"name"=>"Card 1", "quantity"=>1, "cost"=>0, "victory_points"=>1 }
     card2 = {"name"=>"Card 2", "quantity"=>2, "cost"=>0, "victory_points"=>1 }
     card3 = {"name"=>"Card 3", "quantity"=>1, "cost"=>0, "victory_points"=>1 }
     cards = [card1, card2, card3]
 
-    stack = Stack.new([])
-    board = Board.new(stack)
-    new_board = board.fill_stack(cards)
+    board = Board.new(Stack.from_cards(cards))
 
-    assert_equal 4, new_board.stack.cards.length
-    assert_equal Board, new_board.class
-    assert_equal Stack, new_board.stack.class
-    assert_equal Card, new_board.stack.cards[0].class
+    assert_equal 4, board.stack.cards.length
+    assert_equal Board, board.class
+    assert_equal Stack, board.stack.class
+    board.stack.cards.map do |x|
+      assert_equal Card, x.class
+    end
   end
 end
 
