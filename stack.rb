@@ -2,8 +2,19 @@ require_relative 'card.rb'
 
 class Stack
   attr_reader :cards
-  def initialize(cards)
+  def initialize(cards:)
     @cards = cards
+  end
+
+  def fill(cards:)
+    copies = cards.map{ |x| x["quantity"] }
+    cards_with_copies = copies.zip(cards).flat_map{ |x, y| Array.new(x, y) }
+
+    Stack.new(cards:
+      cards_with_copies.map.with_index do |item, ind|
+        Card.new(item["name"], ind, item["cost"], item["victory_points"])
+      end
+    )
   end
 
   def draw(number)

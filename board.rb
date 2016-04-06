@@ -13,16 +13,12 @@ CARDS = YAML.load(File.read("cards.yml"))
 
 class Board
   attr_reader :stack
-  def initialize(stack)
+  def initialize(stack:)
     @stack = stack
   end
-end
 
-COPIES = CARDS.map{ |x| x["quantity"] }
-CARDS_WITH_COPIES = COPIES.zip(CARDS).flat_map{ |x, y| Array.new(x, y) }
-
-stack = Stack.new(
-  CARDS_WITH_COPIES.map.with_index do |item, ind|
-    Card.new(item["name"], ind, item["cost"], item["victory_points"])
+  def fill_stack(cards:)
+    new_stack = @stack.fill(cards: cards)
+    Board.new(stack: new_stack)
   end
-)
+end
