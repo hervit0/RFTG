@@ -20,20 +20,6 @@ class PlayerTest < Minitest::Test
     assert_equal cards, organized_hand
   end
 
-  def test_victory_points
-    card1 = Card.new(name: "card test 1", id: 1, cost: 0, victory_points: 2)
-    card2 = Card.new(name: "card test 2", id: 2, cost: 0, victory_points: 4)
-    card3 = Card.new(name: "card test 3", id: 3, cost: 0, victory_points: 6)
-    cards = [card1, card2, card3]
-
-    hand = Hand.new([])
-    tableau = Tableau.new(cards)
-    stack = Stack.new([])
-    player = Player.new("player", hand, tableau)
-
-    assert_equal 12, player.victory_points
-  end
-
   def test_choose_first_cards
     hand = Hand.new([1, 2, 3])
     tableau = Tableau.new([])

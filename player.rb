@@ -30,8 +30,4 @@ class Player
 
     [Player.new(@name, new_hand, @tableau), new_graveyard]
   end
-
-  def victory_points
-    @tableau.cards.reduce(0){ |acc, ite| acc + ite.victory_points }
-  end
 end
