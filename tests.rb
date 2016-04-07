@@ -1,0 +1,7 @@
+require_relative 'card_test.rb'
+require_relative 'graveyard_test.rb'
+require_relative 'hand_test.rb'
+require_relative 'player_test.rb'
+require_relative 'stack_test.rb'
+require_relative 'board_test.rb'
+require_relative 'tableau_test.rb'
