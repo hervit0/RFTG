@@ -1,5 +1,6 @@
 require 'minitest/autorun'
-require_relative 'player.rb'
+require_relative 'card.rb'
+require_relative 'tableau.rb'
 
 class TableauTest < Minitest::Test
   def test_victory_points

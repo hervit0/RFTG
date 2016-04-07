@@ -1,5 +1,8 @@
 require 'minitest/autorun'
 require_relative 'player.rb'
+require_relative 'card.rb'
+require_relative 'stack.rb'
+require_relative 'graveyard.rb'
 
 class PlayerTest < Minitest::Test
   def test_draw

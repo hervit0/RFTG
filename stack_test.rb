@@ -1,5 +1,6 @@
 require 'minitest/autorun'
 require_relative 'stack.rb'
+require_relative 'card.rb'
 
 class StackTest < Minitest::Test
   def test_from_cards

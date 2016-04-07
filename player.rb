@@ -1,7 +1,5 @@
-require_relative 'tableau.rb'
 require_relative 'hand.rb'
-require_relative 'stack.rb'
-require_relative 'graveyard.rb'
+require_relative 'tableau.rb'
 
 class Player
   attr_reader :name, :hand, :tableau

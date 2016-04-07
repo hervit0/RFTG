@@ -1,11 +1,5 @@
 require 'yaml'
-require_relative 'card.rb'
 require_relative 'stack.rb'
-require_relative 'graveyard.rb'
-require_relative 'hand.rb'
-require_relative 'player.rb'
-require_relative 'tableau.rb'
-require_relative 'phase.rb'
 
 PLAYERS_NUMBER = 2
 PLAYERS_NUMBER_MAX = 4
