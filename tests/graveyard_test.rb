@@ -1,6 +1,6 @@
 require 'minitest/autorun'
-require_relative 'card.rb'
-require_relative 'graveyard.rb'
+require_relative '../card.rb'
+require_relative '../graveyard.rb'
 
 class GraveyardTest < Minitest::Test
   def test_add_cards
