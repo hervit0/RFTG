@@ -1,46 +1,39 @@
 require 'nokogiri'
 
 class Discard
-  attr_reader :player
-  def initialize(player)
+  attr_reader :player, :action
+  def initialize(player, action)
     @player = player
+    @action = action
   end
 
   def discard_cards
     discard = Nokogiri::HTML::Builder.new do |doc|
 
-      doc.html {
-        doc.head {
+      doc.html do
+        doc.head do
           doc.title 'RFTG - Discard cards'
-          link = doc.link
-          link['type'] = 'text/css'
-          link['rel'] = 'stylesheet'
-          link['href'] = '../css/style.css'
-        }
+          doc.link :type => 'text/css', :rel => 'stylesheet', :href => '../css/style.css'
+        end
 
-        doc.body {
+        doc.body do
           doc.h1 "#{@player}'s turn: discard cards", :class => 'header'
 
           doc.p 'Six cards have been drawn, please discard two:'
 
-          doc.div {
+          doc.div :class => "packed_cards" do
             6.times do |_|
-              cat = doc.img
-              cat['src'] = 'http://jolabistouille.j.o.pic.centerblog.net/45777f7a.png'
-              cat['class'] = 'drawn_card'
+              doc.img :class => "drawn_card", :src => 'http://jolabistouille.j.o.pic.centerblog.net/45777f7a.png'
             end
-          }['class'] = 'packed_cards'
 
-          confirm_discard = doc.input
-          confirm_discard['class'] = 'confirm'
-          confirm_discard['type'] = 'submit'
-          confirm_discard['value'] = 'Confirm discarded cards'
+            doc.form :action => "/#{@action}", :method => "POST" do
+              doc.input :class => "confirm", :type => "submit", :value => "Confirm discarded cards"
+            end
+          end
 
-          pic_names = doc.img
-          pic_names['class'] = 'illustration'
-          pic_names['src'] = 'http://i.livescience.com/images/i/000/049/468/original/aliens-ET.jpg'
-        }
-      }
+          doc.img :class => "illustration", :src => 'http://i.livescience.com/images/i/000/049/468/original/aliens-ET.jpg'
+        end
+      end
     end
     [discard.to_html]
   end
