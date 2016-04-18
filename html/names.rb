@@ -9,41 +9,29 @@ class Names
   def give_name
     names = Nokogiri::HTML::Builder.new do |doc|
 
-      doc.html {
-        doc.head {
+      doc.html  do
+        doc.head  do
           doc.title 'RFTG - Names of the players'
-          link = doc.link
-          link['type'] = 'text/css'
-          link['rel'] = 'stylesheet'
-          link['href'] = '../css/style.css'
-        }
+          doc.link :type => 'text/css', :rel => 'stylesheet', :href => '../css/style.css'
+        end
 
-        doc.body {
+        doc.body  do
           doc.h1 'Race for the galaxy', :class => 'header'
 
           doc.p 'Please enter the name of each player.'
-          players_names_form = doc.form {
-            #names = (1..@players_number).map { |x| 'name_player#{x}' }
+          doc.form :action => '/discard', :method => 'POST' do
             @players_number.times do |x|
               doc.p "Name of player #{x+1}:"
-              doc.input :type => 'text'
+              doc.input :type => 'text', :name => "player_name#{x+1}"
             end
-            doc.p ''
-            confirm_name = doc.input
-            confirm_name['class'] = 'confirm'
-            confirm_name['type'] = 'submit'
-            confirm_name['value'] = 'Confirm names of players'
-          }
-          #players_names_form['action'] = 
+            doc.input :type => 'submit', :class => 'confirm', :value => 'Confirm number of player'
 
-          pic_names = doc.img
-          pic_names['class'] = 'illustration'
-          pic_names['src'] = 'http://i.livescience.com/images/i/000/049/468/original/aliens-ET.jpg'
-        }
-      }
+          end
+
+          doc.img :class => 'illustration', :src => 'http://i.livescience.com/images/i/000/049/468/original/aliens-ET.jpg'
+        end
+      end
     end
-    names.to_html
+    [names.to_html]
   end
 end
-
-File.write("test.html", Names.new(2).give_name)

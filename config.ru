@@ -1,13 +1,10 @@
-require_relative 'board.rb'
-require_relative 'card.rb'
-require_relative 'html/welcome.rb'
-require_relative 'html/names.rb'
+require_relative 'html/router.rb'
 
 class RFTG
   def self.call(env)
     status = 200
     headers = {"Content-Type" => "text/html"}
-    body = [Welcome.display]
+    body = Router.select_body(env)
 
     [status, headers, body]
   end

@@ -42,8 +42,6 @@ class Discard
         }
       }
     end
-    discard.to_html
+    [discard.to_html]
   end
 end
-
-File.write("test.html", Discard.new("Toto").discard_cards)
