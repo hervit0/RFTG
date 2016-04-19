@@ -28,12 +28,21 @@ class Router
     elsif url == "http://rftg/discard_next_player" && method == "POST"
       names = YAML.load(File.read("names.yml"))
       status = names.map{ |x| x["status"]}
+      index_next_player = status.index(:not_discarded)
+      next_player = names[index_next_player]["name"]
+
+      new_names = names.map.with_index do |x, i|
+        i == index_next_player ? x.merge("status" => :discarded) : x
+      end
+      File.write("names.yml", new_names.to_yaml)
+
       action = if status.count(:not_discarded) == 1
                  "choose_phases"
                else
                  "discard_next_player"
                end
-      Discard.new("the last", action).discard_cards
+
+      Discard.new(next_player, action).discard_cards
 
     elsif url == "http://rftg/choose_phases" && method == "POST"
 
