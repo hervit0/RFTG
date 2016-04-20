@@ -13,7 +13,7 @@ class Names
 
       doc.html  do
         doc.head  do
-          Setting.define_head(doc)
+          Setting.define_head(doc, title: "RFTG - Names of players")
         end
 
         doc.body :role => 'document' do
@@ -21,18 +21,17 @@ class Names
 
           doc.div :class => "container theme-showcase", :role => "main" do
             doc.div :class => "jumbotron" do
-              doc.h1 "What's your names ?"
+              doc.h1 "Names of players"
               doc.p 'Please enter the name of each player.'
             end
 
-            doc.form :action => '/discard', :method => 'POST' do
+            doc.form :action => '/begin_discard', :method => 'POST' do
               @players_number.times do |x|
                 doc.p "Name of player #{x+1}:"
                 doc.input :type => 'text', :name => "player_name#{x+1}"
               end
-              doc.input :type => 'submit', :class => 'confirm', :value => 'Confirm number of player'
+            doc.input :type => 'submit', :value => 'Confirm number of player'
             end
-
             Picture.alien(doc)
 
           end

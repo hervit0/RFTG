@@ -11,21 +11,24 @@ class Router
     request = Rack::Request.new(env)
     method = request.request_method
     url = request.url
-
+    p request.POST
     if url == "http://rftg/players_names" && method == "POST"
       player_number = request.POST.values.first.to_i
       Names.new(player_number).give_name
 
-    elsif url == "http://rftg/discard" && method == "POST"
+    elsif url == "http://rftg/begin_discard" && method == "POST"
       names = request.POST.to_a.map do |x|
         {"name" => x[1], "status" => :not_discarded}
       end
       File.write("names.yml", names.to_yaml)
+      Discard.begin_discard
 
+    elsif url == "http://rftg/present_player" && method == "POST"
+      names = YAML.load(File.read("names.yml"))
       index_next_player, next_player = next_player(names)
-      Discard.new("next_player_discard").present_players(next_player)
+      Discard.present_players(next_player)
 
-    elsif url == "http://rftg/next_player_discard" && method == "POST"
+    elsif url == "http://rftg/discard" && method == "POST"
       names = YAML.load(File.read("names.yml"))
       index_next_player, next_player = next_player(names)
 
@@ -37,10 +40,9 @@ class Router
       action = if names.map{ |x| x["status"] }.count(:not_discarded) == 1
                  "choose_phases"
                else
-                 "next_player_discard"
+                 "present_player"
                end
-
-      Discard.new(action).discard_cards(next_player)
+      Discard.discard_cards(action, next_player)
 
     elsif url == "http://rftg/choose_phases" && method == "POST"
 

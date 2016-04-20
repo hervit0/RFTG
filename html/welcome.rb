@@ -8,7 +8,7 @@ class Welcome
 
       doc.html do
         doc.head do
-          Setting.define_head(doc)
+          Setting.define_head(doc, title: "RFTG - Welcome")
         end
 
         doc.body :role => 'document' do
@@ -20,8 +20,7 @@ class Welcome
               doc.p 'Welcome on Race for the galaxy board game.'
             end
 
-            doc.img :class => 'img-thumbnail', :style => "width: auto; height: auto; max-height: 200px", :src => "https://upload.wikimedia.org/wikipedia/en/thumb/1/1c/Rftg_cover.jpg/220px-Rftg_cover.jpg"
-
+            Picture.presentation(doc)
             doc.div :class => "page-header" do
               doc.h2 'Description', :class => 'subheader'
             end
@@ -32,7 +31,7 @@ class Welcome
             end
             doc.p "Race for the galaxy is game released by Rio Grande Game. Rules can be found here:"
             doc.a :href => "http://riograndegames.com/uploads/Game/Game_240_gameRules.pdf"  do
-              doc.img :class => "img-thumbnail", :src => "https://encrypted-tbn1.gstatic.com'/images?q=tbn:ANd9GcTVTQOAYN62vuwfsyZI7hogTU3-bJtNYSqTpzm9MeuRGlAPXS7rRmoxyw"
+              Picture.rules(doc)
             end
 
             doc.div :class => "page-header" do
@@ -41,7 +40,9 @@ class Welcome
             doc.p 'Please enter the number of players for this game.'
 
             doc.form :action => '/players_names', :method => 'POST' do
-              doc.input :type => 'text', :name => 'player_number'
+              doc.input :type => 'text', :name => 'player_number' do
+                "Max: 4 players"
+              end
               doc.input :type => 'submit', :class => 'confirm', :value => 'Confirm number of player'
             end
           end
