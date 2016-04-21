@@ -1,6 +1,6 @@
 require 'minitest/autorun'
-require_relative '../card.rb'
-require_relative '../tableau.rb'
+require_relative '../models/card.rb'
+require_relative '../models/tableau.rb'
 
 class TableauTest < Minitest::Test
   def test_victory_points

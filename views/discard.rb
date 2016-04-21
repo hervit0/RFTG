@@ -1,7 +1,7 @@
 require 'nokogiri'
-require_relative '../player.rb'
 require_relative 'setting.rb'
 require_relative 'pictures.rb'
+require_relative 'buttons.rb'
 
 class Discard
   def self.begin_discard
@@ -23,7 +23,7 @@ class Discard
             end
 
             doc.form :action => "/present_player", :method => "POST" do
-              doc.input :class => "confirm", :type => "submit", :value => "Understood, let's go !"
+              Button.confirm(doc, value: "Understood, let's go !")
             end
             Picture.alien(doc)
           end
@@ -51,7 +51,7 @@ class Discard
             end
 
             doc.form :action => "/discard", :method => "POST" do
-              doc.input :type => "submit", :value => "See my 6 cards"
+              Button.confirm(doc, value: "See my 6 cards")
             end
             Picture.alien(doc)
           end
@@ -79,7 +79,7 @@ class Discard
             end
 
             doc.form :action => "/#{action}", :method => "POST" do
-              doc.div :class => "col-md-4" do
+              doc.div :class => "col-sd-4" do
                 6.times.with_index do |_, i|
                   doc.div :class => "panel panel-primary" do
                     doc.div :class => "panel-heading" do
@@ -90,13 +90,13 @@ class Discard
                     doc.div :class => "panel-body" do
                       doc.label :class => "checkbox-inline" do
                         doc.input :type => "checkbox", :name => "checkbox#{i + 1}", :value => "card#{i + 1}"
-                        doc.p "Discard card#{i + 1}"
+                        doc.p "Discard card #{i + 1}"
                       end
                     end
                   end
                 end
 
-                doc.input :type => "submit", :value => "Confirm discarded cards"
+                Button.confirm(doc, value: "Confirm discarded cards")
               end
             end
               Picture.alien(doc)

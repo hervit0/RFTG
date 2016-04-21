@@ -1,5 +1,5 @@
 require 'minitest/autorun'
-require_relative '../hand.rb'
+require_relative '../models/hand.rb'
 
 class CardTest < Minitest::Test
   def test_display

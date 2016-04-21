@@ -1,6 +1,7 @@
 require 'nokogiri'
 require_relative 'setting.rb'
 require_relative 'pictures.rb'
+require_relative 'buttons.rb'
 
 class Names
   attr_reader :players_number
@@ -26,13 +27,15 @@ class Names
             end
 
             doc.form :action => '/begin_discard', :method => 'POST' do
-              @players_number.times do |x|
-                doc.p "Name of player #{x+1}:"
-                doc.input :type => 'text', :name => "player_name#{x+1}"
+              doc.div :class => "col-sm-6" do
+                @players_number.times do |x|
+                  doc.p "Name of player #{x+1}:"
+                  doc.input :type => 'text', :class => "form-control", :placeholder => "Name ?", :name => "player_name#{x+1}"
+                end
+                Button.confirm(doc, value: "Confirm names of player")
               end
-            doc.input :type => 'submit', :value => 'Confirm number of player'
+              Picture.alien(doc)
             end
-            Picture.alien(doc)
 
           end
         end

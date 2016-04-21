@@ -1,6 +1,7 @@
 require 'nokogiri'
 require_relative 'setting.rb'
 require_relative 'pictures.rb'
+require_relative 'buttons.rb'
 
 class Welcome
   def self.display
@@ -17,14 +18,14 @@ class Welcome
           doc.div :class => "container theme-showcase", :role => "main" do
             doc.div :class => "jumbotron" do
               doc.h1 'Welcome !'
-              doc.p 'Welcome on Race for the galaxy board game.'
+              doc.p 'Welcome on Race for the galaxy board game. Ready to conquer space ?'
             end
 
-            Picture.presentation(doc)
             doc.div :class => "page-header" do
               doc.h2 'Description', :class => 'subheader'
             end
             doc.p 'In Race for the galaxy, players build galactic civilizations using game cards that represents worlds or technical and social developments.'
+            Picture.presentation(doc)
 
             doc.div :class => "page-header" do
               doc.h2 'Rules', :class => 'subheader'
@@ -40,10 +41,10 @@ class Welcome
             doc.p 'Please enter the number of players for this game.'
 
             doc.form :action => '/players_names', :method => 'POST' do
-              doc.input :type => 'text', :name => 'player_number' do
-                "Max: 4 players"
+              doc.div :class => "col-sm-6" do
+              doc.input :type => 'text', :class => "form-control", :placeholder => "4 players max.", :name => 'player_number'
+              Button.confirm(doc, value: "Confirm number of player")
               end
-              doc.input :type => 'submit', :class => 'confirm', :value => 'Confirm number of player'
             end
           end
         end

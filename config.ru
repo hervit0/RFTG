@@ -1,4 +1,4 @@
-require_relative 'html/router.rb'
+require_relative 'router.rb'
 
 class RFTG
   def self.call(env)
