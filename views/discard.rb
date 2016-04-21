@@ -12,17 +12,13 @@ class Discard
           Setting.define_head(doc, title: "RFTG - Discard cards")
         end
 
-        doc.body :role => 'document' do
+        doc.body Setting.body do
           Setting.main_navbar(doc)
 
           doc.div :class => "container theme-showcase", :role => "main" do
-            doc.div :class => "jumbotron" do
-              doc.h1 "Draw cards"
-              doc.p "Each player is about to draw 6 cards and discard 2 among them. Choose wisely and don't forget that your money is also your hand !"
-              doc.p "Good luck warrior !"
-            end
+            Setting.jumbotron(doc, head: "Draw cards", body: "Each player is about to draw 6 cards and discard 2 among them. Choose wisely and don't forget that your money is also your hand ! Good luck warrior !")
 
-            doc.form :action => "/present_player", :method => "POST" do
+            doc.form :action => "/present_player", :method => "POST", :class => "form-horizontal" do
               Button.confirm(doc, value: "Understood, let's go !")
             end
             Picture.alien(doc)
@@ -41,16 +37,13 @@ class Discard
           Setting.define_head(doc, title: "RFTG - Discard cards")
         end
 
-        doc.body :role => 'document 'do
+        doc.body Setting.body do
           Setting.main_navbar(doc)
 
           doc.div :class => "container theme-showcase", :role => "main" do
-            doc.div :class => "jumbotron" do
-              doc.h1 "#{player}'s turn: discard cards"
-              doc.p 'Six cards will be drawn.'
-            end
+            Setting.jumbotron(doc, head: "#{player}'s turn: discard cards", body: "Six cards will be drawn for you.")
 
-            doc.form :action => "/discard", :method => "POST" do
+            doc.form :action => "/discard", :method => "POST", :class => "form-horizontal" do
               Button.confirm(doc, value: "See my 6 cards")
             end
             Picture.alien(doc)
@@ -69,16 +62,13 @@ class Discard
           Setting.define_head(doc, title: "RFTG - Discard cards")
         end
 
-        doc.body :role => 'document' do
+        doc.body Setting.body do
           Setting.main_navbar(doc)
 
           doc.div :class => "container theme-showcase", :role => "main" do
-            doc.div :class => "jumbotron" do
-              doc.h1 "#{player}'s turn: discard cards"
-              doc.p 'Six cards have been drawn, please discard two:'
-            end
+            Setting.jumbotron(doc, head: "#{player}'s turn: discard cards", body: "Six cards have been drawn, please discard two.")
 
-            doc.form :action => "/#{action}", :method => "POST" do
+            doc.form :action => "/#{action}", :method => "POST", :class => "form-horizontal" do
               doc.div :class => "col-sd-4" do
                 6.times.with_index do |_, i|
                   doc.div :class => "panel panel-primary" do

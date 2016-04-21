@@ -2,6 +2,7 @@ require 'nokogiri'
 require_relative 'setting.rb'
 require_relative 'pictures.rb'
 require_relative 'buttons.rb'
+require_relative 'text_input.rb'
 
 class Names
   attr_reader :players_number
@@ -17,27 +18,21 @@ class Names
           Setting.define_head(doc, title: "RFTG - Names of players")
         end
 
-        doc.body :role => 'document' do
+        doc.body Setting.body do
           Setting.main_navbar(doc)
 
           doc.div :class => "container theme-showcase", :role => "main" do
-            doc.div :class => "jumbotron" do
-              doc.h1 "Names of players"
-              doc.p 'Please enter the name of each player.'
-            end
+            Setting.jumbotron(doc, head: "My name is Bond...", body: "You're about to rule the galaxy, but what's your name again ?")
 
-            doc.form :action => '/begin_discard', :method => 'POST' do
-              doc.div :class => "col-sm-6" do
-                @players_number.times do |x|
-                  doc.p "Name of player #{x+1}:"
-                  doc.input :type => 'text', :class => "form-control", :placeholder => "Name ?", :name => "player_name#{x+1}"
-                end
-                Button.confirm(doc, value: "Confirm names of player")
+            Setting.title_h2(doc, "What's your name#{@players_number > 1 ? "s" : ""} ?")
+            doc.form :action => '/begin_discard', :method => 'POST', :class => "form-horizontal" do
+              @players_number.times do |x|
+                Text.form(doc, label: "Name of player #{x+1}:", placeholder: "Name ?", name: "player_name#{x+1}")
               end
-              Picture.alien(doc)
+              Button.confirm_form(doc, value: "Confirm names of player")
             end
-
           end
+            Picture.alien(doc)
         end
       end
     end
