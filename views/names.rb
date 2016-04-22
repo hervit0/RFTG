@@ -24,7 +24,7 @@ class Names
           doc.div :class => "container theme-showcase", :role => "main" do
             Setting.jumbotron(doc, head: "My name is Bond...", body: "You're about to rule the galaxy, but what's your name again ?")
 
-            Setting.title_h2(doc, "What's your name#{@players_number > 1 ? "s" : ""} ?")
+            Setting.title_h2(doc, "Write your name#{@players_number > 1 ? "s" : ""}")
             doc.form :action => '/begin_discard', :method => 'POST', :class => "form-horizontal" do
               @players_number.times do |x|
                 Text.form(doc, label: "Name of player #{x+1}:", placeholder: "Name ?", name: "player_name#{x+1}")

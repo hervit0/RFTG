@@ -3,6 +3,7 @@ require_relative 'services/players.rb'
 require_relative 'views/welcome.rb'
 require_relative 'views/names.rb'
 require_relative 'views/discard.rb'
+require_relative 'views/phases.rb'
 
 class Router
   def self.select_body(env)
@@ -27,6 +28,7 @@ class Router
       Discard.discard_cards(action, player_name)
 
     elsif url == "http://rftg/choose_phases" && method == "POST"
+      Phase.choose
 
     else
       Welcome.display

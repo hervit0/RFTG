@@ -1,13 +1,27 @@
+require 'yaml'
+require_relative 'state.rb'
+require_relative '../models/player.rb'
+require_relative '../models/stack.rb'
+require_relative '../models/hand.rb'
+require_relative '../models/graveyard.rb'
+
+CARDS = YAML.load(File.read("models/cards.yml"))
+
 class Players
   def self.number(request)
     request.POST.values.first.to_i
   end
 
   def self.names(request)
-    names = request.POST.to_a.map do |x|
-      {"name" => x[1], "status" => :not_discarded}
+    id = request.cookies["session"]
+    stack = Stack.from_cards(CARDS)
+    graveyard = Graveyard.new([])
+    players = request.POST.to_a.map do |x|
+      Player.new(x[1], Hand.new([]), []).draw(6, stack).first
     end
-    File.write("names.yml", names.to_yaml)
+    p players
+    State.new(id, players, stack, graveyard).record
+    p State.watch(id).id
   end
 
   def self.present

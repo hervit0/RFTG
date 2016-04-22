@@ -41,7 +41,7 @@ class Discard
           Setting.main_navbar(doc)
 
           doc.div :class => "container theme-showcase", :role => "main" do
-            Setting.jumbotron(doc, head: "#{player}'s turn: discard cards", body: "Six cards will be drawn for you.")
+            Setting.jumbotron(doc, head: "#{player}, it's your turn !", body: "Six cards will be drawn for you.")
 
             doc.form :action => "/discard", :method => "POST", :class => "form-horizontal" do
               Button.confirm(doc, value: "See my 6 cards")
@@ -66,15 +66,15 @@ class Discard
           Setting.main_navbar(doc)
 
           doc.div :class => "container theme-showcase", :role => "main" do
-            Setting.jumbotron(doc, head: "#{player}'s turn: discard cards", body: "Six cards have been drawn, please discard two.")
+            Setting.jumbotron(doc, head: "#{player}, discard 2 cards", body: "Six cards have been drawn, please discard two. The other four will go in your hand.")
 
             doc.form :action => "/#{action}", :method => "POST", :class => "form-horizontal" do
-              doc.div :class => "col-sd-4" do
+              doc.div :class => "col-sd-2" do
                 6.times.with_index do |_, i|
                   doc.div :class => "panel panel-primary" do
                     doc.div :class => "panel-heading" do
                     doc.div :class => "panel-title" do
-                      doc.h3 "Card #{i + 1}"
+                      doc.h3 "Card #{i + 1}", :style => "margin-top:0px; margin-bottom:0px"
                     end
                   end
                     doc.div :class => "panel-body" do
