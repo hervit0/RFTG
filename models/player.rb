@@ -16,13 +16,7 @@ class Player
     [Player.new(@name, new_hand, @tableau), new_stack]
   end
 
-  def choose_first_cards(graveyard)
-    puts @hand.display
-    puts "Choose first card to discard:"
-    first = gets.chomp.to_i
-    puts "Choose second card to discard:"
-    second = gets.chomp.to_i
-
+  def choose_first_cards(graveyard, first, second)
     new_hand, discarded_cards = @hand.remove_cards(first, second)
     new_graveyard = graveyard.add_cards(discarded_cards)
 

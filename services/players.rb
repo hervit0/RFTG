@@ -4,6 +4,7 @@ require_relative '../models/player.rb'
 require_relative '../models/stack.rb'
 require_relative '../models/hand.rb'
 require_relative '../models/graveyard.rb'
+require_relative '../models/tableau.rb'
 
 CARDS = YAML.load(File.read("models/cards.yml"))
 
@@ -17,38 +18,48 @@ class Players
     stack = Stack.from_cards(CARDS)
     graveyard = Graveyard.new([])
     players = request.POST.to_a.map do |x|
-      Player.new(x[1], Hand.new([]), []).draw(6, stack).first
+      Player.new(x[1], Hand.new([]), Tableau.new([])).draw(6, stack).first
     end
-    p players
     State.new(id, players, stack, graveyard).record
-    p State.watch(id).id
   end
 
-  def self.present
-    player_index, player_name = next_player
+  def self.present(request)
+    id = request.cookies["session"]
+    state = State.watch(id)
+    player_index, player_name = next_player(state)
+    player_name
   end
 
-  def self.discard
-    player_index, player_name, names = next_player
-    new_names = names.map.with_index do |x, i|
-      i == player_index ? x.merge("status" => :discarded) : x
-    end
-    File.write("names.yml", new_names.to_yaml)
+  def self.discard(request)
+    id = request.cookies["session"]
+    state = State.watch(id)
+    player_index, player_name = next_player(state)
+    player_name
+  end
 
-    action = if names.map{ |x| x["status"] }.count(:not_discarded) == 1
-               "choose_phases"
-             else
-               "present_player"
-             end
-    [action, player_name]
+  def self.show_kept_cards(request)
+    id = request.cookies["session"]
+    state = State.watch(id)
+    players_remaining = state.players.map{ |x| x.hand.cards.length }.count(6)
+    action = players_remaining == 1 ? "choose_phases" : "present_player"
+    binding.pry
+
+    player_index, player_name = next_player(state)
+    player = state.players[player_index]
+    first, second = request.POST.values.map{ |x| x.to_i }
+    graveyard = state.graveyard
+    new_player, new_graveyard = player.choose_first_cards(graveyard, first, second)
+    new_players = state.players.map.with_index{ |x,i| i == player_index ? new_player : x}
+    new_state = State.new(state.id, new_players, state.stack, new_graveyard)
+    player_index_new, player_name_new = next_player(new_state)
+
+    [action, player_name_new]
   end
 end
 
-def next_player
-  names = YAML.load(File.read("names.yml"))
-  status = names.map{ |x| x["status"] }
-  player_index = status.index(:not_discarded)
-  player_name = names[player_index]["name"]
-  [player_index, player_name, names]
+def next_player(state)
+    hands_size = state.players.map{ |x| x.hand.cards.length }
+    player_index = hands_size.index(6)
+    player_name = state.players.map{ |x| x.name }[player_index]
+    [player_index, player_name]
 end
-
