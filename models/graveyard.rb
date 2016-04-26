@@ -1,12 +1,18 @@
 require_relative 'card.rb'
 
-class Graveyard
-  attr_reader :cards
-  def initialize(cards)
-    @cards = cards
-  end
+module Model
+  class Graveyard
+    attr_reader :cards
+    def initialize(cards)
+      @cards = cards
+    end
 
-  def add_cards(cards)
-    Graveyard.new(@cards + cards)
+    def self.empty
+      Graveyard.new([])
+    end
+
+    def add_cards(cards)
+      Model::Graveyard.new(@cards + cards)
+    end
   end
 end

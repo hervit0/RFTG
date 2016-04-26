@@ -1,5 +1,6 @@
 require 'yaml'
 require_relative 'state.rb'
+require_relative '../router.rb'
 require_relative '../models/player.rb'
 require_relative '../models/stack.rb'
 require_relative '../models/hand.rb'
@@ -15,7 +16,7 @@ module Service
     end
 
     def self.present(request)
-      id = request.cookies["session"]
+      id = request.cookies[Router::SESSION]
       state = Service::State.watch(id)
       player_index, player_name = next_player(state)
       player_hand = Service::Detail.cards(state.players[player_index].hand.cards)
@@ -23,10 +24,10 @@ module Service
     end
 
     def self.show_kept_cards(request)
-      id = request.cookies["session"]
+      id = request.cookies[Router::SESSION]
       state = Service::State.watch(id)
       players_remaining = state.players.map{ |x| x.hand.cards.length }.count(6)
-      action = players_remaining == 1 ? "choose_phases" : "present_player"
+      action = players_remaining == 1 ? Router::PATH_CHOOSE_PHASES : Router::PATH_PRESENT_PLAYER
 
       player_index, player_name = next_player(state)
       player = state.players[player_index]

@@ -1,4 +1,5 @@
 require 'yaml'
+require_relative '../router.rb'
 require_relative '../models/player.rb'
 require_relative '../models/stack.rb'
 require_relative '../models/hand.rb'
@@ -7,6 +8,16 @@ require_relative '../models/graveyard.rb'
 require_relative '../models/tableau.rb'
 
 module Service
+  ID = "id"
+  PLAYERS = "players"
+  STACK = "stack"
+  GRAVEYARD = "graveyard"
+  NAME = "name"
+  HAND = "hand"
+  TABLEAU = "tableau"
+  COST = "cost"
+  VICTORY_POINTS = "victory_points"
+
   class State
     attr_reader :id, :players, :stack, :graveyard
     def initialize(id, players, stack, graveyard)
@@ -17,12 +28,13 @@ module Service
     end
 
     def self.initialize_game(request)
-      id = request.cookies["session"]
-      graveyard = Graveyard.new([])
-
+      id = request.cookies[Router::SESSION]
+      graveyard =Model::Graveyard.empty
+      hand = Model::Hand.empty
+      tableau = Model::Hand.empty
       names = request.POST.to_a.map{ |x| x.last.capitalize }
-      players, stack = names.reduce([[], Stack.from_cards(CARDS)]) do |ac, it|
-        new_player, new_stack = Model::Player.new(it, Hand.new([]), Tableau.new([])).draw(6, ac.last)
+      players, stack = names.reduce([[], Model::Stack.from_cards(CARDS)]) do |ac, it|
+        new_player, new_stack = Model::Player.new(it, hand, tableau).draw(6, ac.last)
         [ac.first + [new_player], new_stack]
       end
 
@@ -31,65 +43,65 @@ module Service
 
     def record
       state = {
-        "id" => @id,
-        "players" => Service::Detail.players(@players),
-        "stack" => Service::Detail.cards(@stack.cards),
-        "graveyard" => Service::Detail.cards(@graveyard.cards)
+        Service::ID => @id,
+        Service::PLAYERS => Service::Detail.players(@players),
+        Service::STACK => Service::Detail.cards(@stack.cards),
+        Service::GRAVEYARD => Service::Detail.cards(@graveyard.cards)
       }
       File.write("#{@id}.yml", state.to_yaml)
     end
 
     def self.watch(id)
       state = YAML.load(File.read("#{id}.yml"))
-      id = state["id"]
-      players = Service::Create.new_players(state["players"])
-      stack = Stack.new(Service::Create.new_cards(state["stack"]))
-      graveyard = Graveyard.new(Service::Create.new_cards(state["graveyard"]))
+      id = state[Service::ID]
+      players = Service::Create.new_players(state[Service::PLAYERS])
+      stack = Model::Stack.new(Service::Create.new_cards(state[Service::STACK]))
+      graveyard = Model::Graveyard.new(Service::Create.new_cards(state[Service::GRAVEYARD]))
       Service::State.new(id, players, stack, graveyard)
     end
   end
 
   class Detail
     def self.players(players)
-        players.map do |x|
-          {"name" => x.name,
-           "hand" => Service::Detail.cards(x.hand.cards),
-           "tableau" => Service::Detail.cards(x.tableau.cards)}
-        end
+      players.map do |x|
+        {Service::NAME => x.name,
+         Service::HAND => Service::Detail.cards(x.hand.cards),
+         Service::TABLEAU => Service::Detail.cards(x.tableau.cards)}
       end
+    end
 
     def self.cards(cards)
-        cards.map do |x|
-          {"name" => x.name,
-           "id" => x.id,
-           "cost" => x.cost,
-           "victory_points" => x.victory_points
-          }
-        end
+      cards.map do |x|
+        {Service::NAME => x.name,
+         Service::ID => x.id,
+         Service::COST => x.cost,
+         Service::VICTORY_POINTS => x.victory_points
+        }
       end
+    end
   end
 
   class Create
     def self.new_players(players)
-        players.map do |x|
-          Model::Player.new(
-            x["name"],
-            Hand.new(Service::Create.new_cards(x["hand"])),
-            Tableau.new(Service::Create.new_cards(x["tableau"]))
-          )
-        end
+      players.map do |x|
+        Model::Player.new(
+          x[Service::NAME],
+          Model::Hand.new(Service::Create.new_cards(x[Service::HAND])),
+          Model::Tableau.new(Service::Create.new_cards(x[Service::TABLEAU]))
+        )
       end
+    end
 
     def self.new_cards(cards)
-        cards == [] ? [] :
-          cards.map do |x|
-          Card.new(
-            name: x["name"],
-            id: x["id"],
-            cost: x["cost"],
-            victory_points: x["victory_points"]
-          )
-        end
+      cards == [] ? [] :
+        cards.map do |x|
+        Model::Card.new(
+          name: x[Service::NAME],
+          id: x[Service::ID],
+          cost: x[Service::COST],
+          victory_points: x[Service::VICTORY_POINTS]
+        )
       end
+    end
   end
 end
