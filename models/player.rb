@@ -1,6 +1,7 @@
 require_relative 'hand.rb'
 require_relative 'tableau.rb'
 
+module Model
 class Player
   attr_reader :name, :hand, :tableau
   def initialize(name, hand, tableau)
@@ -22,4 +23,5 @@ class Player
 
     [Player.new(@name, new_hand, @tableau), new_graveyard]
   end
+end
 end

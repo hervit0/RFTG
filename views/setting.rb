@@ -42,7 +42,9 @@ class Setting
 
   def self.jumbotron(doc, head:, body:)
     doc.div :class => "jumbotron", :style => "padding-top:5px; padding-bottom:5px" do
-      doc.h1 head
+      doc.h1 :style => "font-size:40px" do
+        doc.text head
+      end
       doc.p body
     end
   end

@@ -2,6 +2,7 @@ require 'nokogiri'
 require_relative 'setting.rb'
 require_relative 'pictures.rb'
 require_relative 'buttons.rb'
+require_relative 'display.rb'
 
 class Discard
   def self.begin_discard
@@ -54,7 +55,7 @@ class Discard
     [present.to_html]
   end
 
-  def self.discard_cards(player)
+  def self.discard_cards(player_name, player_hand )
     discard = Nokogiri::HTML::Builder.new do |doc|
 
       doc.html do
@@ -66,30 +67,13 @@ class Discard
           Setting.main_navbar(doc)
 
           doc.div :class => "container theme-showcase", :role => "main" do
-            Setting.jumbotron(doc, head: "#{player}, discard 2 cards", body: "Six cards have been drawn, please discard two. The other four will go in your hand.")
+            Setting.jumbotron(doc, head: "#{player_name}, discard 2 cards", body: "Six cards have been drawn, please discard two. The other four will go in your hand.")
 
             doc.form :action => "/show_kept_cards", :method => "POST", :class => "form-horizontal" do
-              doc.div :class => "col-sd-2" do
-                6.times.with_index do |_, i|
-                  doc.div :class => "panel panel-primary" do
-                    doc.div :class => "panel-heading" do
-                    doc.div :class => "panel-title" do
-                      doc.h3 "Card #{i + 1}", :style => "margin-top:0px; margin-bottom:0px"
-                    end
-                  end
-                    doc.div :class => "panel-body" do
-                      doc.label :class => "checkbox-inline" do
-                        doc.input :type => "checkbox", :name => "checkbox#{i + 1}", :value => "#{i + 1}"
-                        doc.p "Discard card #{i + 1}"
-                      end
-                    end
-                  end
-                end
-
-                Button.confirm(doc, value: "Confirm discarded cards")
-              end
+              Display.hand(doc, player_hand, discard_parameter: "enabled")
+              Button.confirm(doc, value: "Confirm discarded cards")
             end
-              Picture.alien(doc)
+            Picture.alien(doc)
           end
         end
       end
@@ -97,7 +81,7 @@ class Discard
     [discard.to_html]
   end
 
-  def self.show_kept_cards(action, player)
+  def self.show_kept_cards(action, player_name, player_hand)
     show = Nokogiri::HTML::Builder.new do |doc|
 
       doc.html do
@@ -109,9 +93,10 @@ class Discard
           Setting.main_navbar(doc)
 
           doc.div :class => "container theme-showcase", :role => "main" do
-            Setting.jumbotron(doc, head: "#{player}, ", body: "These cards are the cards that you've kept")
+            Setting.jumbotron(doc, head: "#{player_name}'s hand", body: "These cards are the cards that you've decided to keep.")
 
             doc.form :action => "/#{action}", :method => "POST", :class => "form-horizontal" do
+              Display.hand(doc, player_hand, discard_parameter: "disabled")
               Button.confirm(doc, value: "OK, next player")
             end
             Picture.alien(doc)
