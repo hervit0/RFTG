@@ -42,6 +42,8 @@ module View
         end
       end
     end
+
     private_class_method :display_card, :panel
+
   end
 end

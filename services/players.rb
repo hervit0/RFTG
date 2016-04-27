@@ -8,8 +8,6 @@ require_relative '../models/graveyard.rb'
 require_relative '../models/tableau.rb'
 
 module Service
-  CARDS = YAML.load(File.read("models/cards.yml"))
-
   class Player
     def self.number(request)
       request.POST.values.first.to_i

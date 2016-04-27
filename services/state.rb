@@ -17,6 +17,7 @@ module Service
   TABLEAU = "tableau"
   COST = "cost"
   VICTORY_POINTS = "victory_points"
+  CARDS = YAML.load(File.read(File.join(File.expand_path(File.dirname(__FILE__)),"../models/cards.yml")))
 
   class State
     attr_reader :id, :players, :stack, :graveyard
@@ -29,11 +30,11 @@ module Service
 
     def self.initialize_game(request)
       id = request.cookies[Router::SESSION]
-      graveyard =Model::Graveyard.empty
+      graveyard = Model::Graveyard.empty
       hand = Model::Hand.empty
       tableau = Model::Hand.empty
       names = request.POST.to_a.map{ |x| x.last.capitalize }
-      players, stack = names.reduce([[], Model::Stack.from_cards(CARDS)]) do |ac, it|
+      players, stack = names.reduce([[], Model::Stack.from_cards(Service::CARDS)]) do |ac, it|
         new_player, new_stack = Model::Player.new(it, hand, tableau).draw(6, ac.last)
         [ac.first + [new_player], new_stack]
       end
