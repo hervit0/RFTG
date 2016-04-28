@@ -6,7 +6,7 @@ require_relative 'text_input.rb'
 
 module View
   class Welcome
-    def self.display
+    def self.display(path)
       welcome = Nokogiri::HTML::Builder.new do |doc|
 
         doc.html do
@@ -33,7 +33,7 @@ module View
               View::Setting.title_h2(doc, "Let's play")
               doc.p 'Please enter the number of players for this game.'
 
-              doc.form :action => '/players_names', :method => 'POST', :class => "form-horizontal" do
+              doc.form :action => path, :method => 'POST', :class => "form-horizontal" do
                 Text.form(doc, label: "Number of player", placeholder: "4 players max.", name: "player_number")
                 View::Button.confirm_form(doc, value: "Confirm number of player")
               end

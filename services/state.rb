@@ -60,6 +60,15 @@ module Service
     def self.from_board(id, board)
       State.new(id, board.players, board.stack, board.graveyard)
     end
+
+    def self.apply_discard(request)
+      id = Session.id(request)
+      state = State.unmarshal(id)
+      board = state.to_board
+      first_card, second_card = request.POST.values.map{ |x| x.to_i }
+      new_board, index_player  = board.make_player_discard(first_card, second_card)
+      State.from_board(id, new_board).marshal
+    end
   end
 
   class Detail

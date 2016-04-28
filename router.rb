@@ -13,7 +13,7 @@ module Router
   module Path
     PLAYERS_NAMES = "/players_names"
     BEGIN_DISCARD = "/begin_discard"
-    PRESENT_PLAYER = "/present_player"
+    INTRODUCE_PLAYER = "/introduce_player"
     DISCARD = "/discard"
     SHOW_KEPT_CARDS = "/show_kept_cards"
     CHOOSE_PHASES = "/choose_phases"
@@ -27,29 +27,48 @@ module Router
 
       if key(Path::PLAYERS_NAMES, METHOD_POST)
         players_number = Service::Player.number(request)
-        View::Player.give_name(players_number)
+        View::Player.give_name(Path::BEGIN_DISCARD, players_number)
+
+
+
 
       elsif key(Path::BEGIN_DISCARD, METHOD_POST)
         Service::State.initialize_game(request)
-        View::Player.begin_discard(Path::PRESENT_PLAYER)
+        View::Player.begin_discard(Path::INTRODUCE_PLAYER)
 
-      elsif key(Path::PRESENT_PLAYER, METHOD_POST)
+
+
+
+
+      elsif key(Path::INTRODUCE_PLAYER, METHOD_POST)
         player = Service::Player.introduce(request)
-        View::Player.present(Path::DISCARD, player.name)
+        View::Player.introduce(Path::DISCARD, player.name)
 
       elsif key(Path::DISCARD, METHOD_POST)
-        player = Service::Player.introduce(request)
-        View::Player.discard_cards(Path::SHOW_KEPT_CARDS, player.name, player.hand)
+        path, player = Service::Player.discard(request)
+        View::Player.discard_cards(path, player.name, player.hand)
 
-      elsif key(Path::SHOW_KEPT_CARDS, METHOD_POST)
-        path, player = Service::Player.show_kept_cards(request)
-        View::Player.show_kept_cards(path, player.name, player.hand)
+
+
+
+
+
+
+    #  elsif key(Path::SHOW_KEPT_CARDS, METHOD_POST)
+     #   path, player = Service::Player.show_kept_cards(request)
+     #   View::Player.show_kept_cards(path, player.name, player.hand)
+
+
+
+
+
 
       elsif key(Path::CHOOSE_PHASES, METHOD_POST)
+        Service::State.apply_discard(request)
         View::Phase.choose
 
       else
-        View::Welcome.display
+        View::Welcome.display(Path::PLAYERS_NAMES)
       end
     end
 

@@ -6,7 +6,7 @@ require_relative 'display.rb'
 
 module View
   class Player
-    def self.give_name(players_number)
+    def self.give_name(path, players_number)
       names = Nokogiri::HTML::Builder.new do |doc|
 
         doc.html  do
@@ -21,7 +21,7 @@ module View
               View::Setting.jumbotron(doc, head: "My name is Bond...", body: "You're about to rule the galaxy, but what's your name again ?")
 
               View::Setting.title_h2(doc, "Write your name#{players_number > 1 ? "s" : ""}")
-              doc.form :action => '/begin_discard', :method => 'POST', :class => "form-horizontal" do
+              doc.form :action => path, :method => 'POST', :class => "form-horizontal" do
                 players_number.times do |x|
                   View::Text.form(doc, label: "Name of player #{x+1}:", placeholder: "Name ?", name: "player_name#{x+1}")
                 end
@@ -60,8 +60,8 @@ module View
       [begin_discard.to_html]
     end
 
-    def self.present(path, player)
-      present = Nokogiri::HTML::Builder.new do |doc|
+    def self.introduce(path, player)
+      introduce = Nokogiri::HTML::Builder.new do |doc|
 
         doc.html do
           doc.head do
@@ -82,7 +82,7 @@ module View
           end
         end
       end
-      [present.to_html]
+      [introduce.to_html]
     end
 
     def self.discard_cards(path, player_name, player_hand )

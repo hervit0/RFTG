@@ -15,23 +15,25 @@ module Service
     end
 
     def self.introduce(request)
+      if request.POST != {}
+        State.apply_discard(request)
+      end
+
       id = Session.id(request)
       state = State.unmarshal(id)
       board = state.to_board
       player = board.next_player_to_discard
+
       IntroducePlayer.new(player)
     end
 
-    def self.show_kept_cards(request)
+    def self.discard(request)
       id = Session.id(request)
       state = State.unmarshal(id)
       board = state.to_board
       path = Session.next_action(board.count_players_havent_discard)
-
-      first_card, second_card = request.POST.values.map{ |x| x.to_i }
-      new_board, index_player  = board.make_player_discard(first_card, second_card)
-      player = new_board.players[index_player]
-      State.from_board(id, new_board).marshal
+      #actualise board ?
+      player = board.next_player_to_discard
 
       [path, IntroducePlayer.new(player)]
     end
