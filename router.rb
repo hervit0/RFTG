@@ -9,12 +9,15 @@ module Router
   METHOD_POST = "POST"
   SESSION = "session"
   SESSION_ID = "rftg1"
-  PATH_PLAYERS_NAMES = "/players_names"
-  PATH_BEGIN_DISCARD = "/begin_discard"
-  PATH_PRESENT_PLAYER = "/present_player"
-  PATH_DISCARD = "/discard"
-  PATH_SHOW_KEPT_CARDS = "/show_kept_cards"
-  PATH_CHOOSE_PHASES = "/choose_phases"
+
+  module Path
+    PLAYERS_NAMES = "/players_names"
+    BEGIN_DISCARD = "/begin_discard"
+    PRESENT_PLAYER = "/present_player"
+    DISCARD = "/discard"
+    SHOW_KEPT_CARDS = "/show_kept_cards"
+    CHOOSE_PHASES = "/choose_phases"
+  end
 
   class Controller
     def self.select_body(env)
@@ -22,27 +25,27 @@ module Router
       @method = request.request_method
       @path = request.path
 
-      if key(Router::PATH_PLAYERS_NAMES, Router::METHOD_POST)
+      if key(Path::PLAYERS_NAMES, METHOD_POST)
         players_number = Service::Player.number(request)
         View::Player.give_name(players_number)
 
-      elsif key(Router::PATH_BEGIN_DISCARD, Router::METHOD_POST)
+      elsif key(Path::BEGIN_DISCARD, METHOD_POST)
         Service::State.initialize_game(request)
-        View::Player.begin_discard
+        View::Player.begin_discard(Path::PRESENT_PLAYER)
 
-      elsif key(Router::PATH_PRESENT_PLAYER, Router::METHOD_POST)
-        player_name, player_hand = Service::Player.present(request)
-        View::Player.present(player_name)
+      elsif key(Path::PRESENT_PLAYER, METHOD_POST)
+        player = Service::Player.introduce(request)
+        View::Player.present(Path::DISCARD, player.name)
 
-      elsif key(Router::PATH_DISCARD, Router::METHOD_POST)
-        player_name, player_hand = Service::Player.present(request)
-        View::Player.discard_cards(player_name, player_hand)
+      elsif key(Path::DISCARD, METHOD_POST)
+        player = Service::Player.introduce(request)
+        View::Player.discard_cards(Path::SHOW_KEPT_CARDS, player.name, player.hand)
 
-      elsif key(Router::PATH_SHOW_KEPT_CARDS, Router::METHOD_POST)
-        action, player_name, player_hand = Service::Player.show_kept_cards(request)
-        View::Player.show_kept_cards(action, player_name, player_hand)
+      elsif key(Path::SHOW_KEPT_CARDS, METHOD_POST)
+        path, player = Service::Player.show_kept_cards(request)
+        View::Player.show_kept_cards(path, player.name, player.hand)
 
-      elsif key(Router::PATH_CHOOSE_PHASES, Router::METHOD_POST)
+      elsif key(Path::CHOOSE_PHASES, METHOD_POST)
         View::Phase.choose
 
       else

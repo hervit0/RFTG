@@ -1,6 +1,7 @@
 require 'yaml'
 require_relative 'state.rb'
-require_relative '../router.rb'
+require_relative 'session.rb'
+require_relative '../models/board.rb'
 require_relative '../models/player.rb'
 require_relative '../models/stack.rb'
 require_relative '../models/hand.rb'
@@ -13,38 +14,34 @@ module Service
       request.POST.values.first.to_i
     end
 
-    def self.present(request)
-      id = request.cookies[Router::SESSION]
-      state = Service::State.watch(id)
-      player_index, player_name = next_player(state)
-      player_hand = Service::Detail.cards(state.players[player_index].hand.cards)
-      [player_name, player_hand]
+    def self.introduce(request)
+      id = Session.id(request)
+      state = State.unmarshal(id)
+      board = state.to_board
+      player = board.next_player_to_discard
+      IntroducePlayer.new(player)
     end
 
     def self.show_kept_cards(request)
-      id = request.cookies[Router::SESSION]
-      state = Service::State.watch(id)
-      players_remaining = state.players.map{ |x| x.hand.cards.length }.count(6)
-      action = players_remaining == 1 ? Router::PATH_CHOOSE_PHASES : Router::PATH_PRESENT_PLAYER
+      id = Session.id(request)
+      state = State.unmarshal(id)
+      board = state.to_board
+      path = Session.next_action(board.count_players_havent_discard)
 
-      player_index, player_name = next_player(state)
-      player = state.players[player_index]
-      first, second = request.POST.values.map{ |x| x.to_i }
-      graveyard = state.graveyard
-      new_player, new_graveyard = player.choose_first_cards(graveyard, first, second)
-      new_players = state.players.map.with_index{ |x,i| i == player_index ? new_player : x}
-      new_state = Service::State.new(state.id, new_players, state.stack, new_graveyard).record
-      player_hand = Service::Detail.cards(Service::State.watch(id).players[player_index].hand.cards)
+      first_card, second_card = request.POST.values.map{ |x| x.to_i }
+      new_board, index_player  = board.make_player_discard(first_card, second_card)
+      player = new_board.players[index_player]
+      State.from_board(id, new_board).marshal
 
-      [action, player_name, player_hand]
+      [path, IntroducePlayer.new(player)]
     end
+  end
 
-    def self.next_player(state)
-      hands_size = state.players.map{ |x| x.hand.cards.length }
-      player_index = hands_size.index(6)
-      player_name = state.players.map{ |x| x.name }[player_index]
-      [player_index, player_name]
+  class IntroducePlayer
+    attr_reader :name, :hand
+    def initialize(player)
+      @name = player.name
+      @hand = Detail.cards(player.hand.cards)
     end
-    private_class_method :next_player
   end
 end

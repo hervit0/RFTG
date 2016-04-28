@@ -12,7 +12,7 @@ module Model
     end
 
     def add_cards(cards)
-      Model::Graveyard.new(@cards + cards)
+      Graveyard.new(@cards + cards)
     end
   end
 end
