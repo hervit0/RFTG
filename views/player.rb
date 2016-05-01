@@ -6,7 +6,7 @@ require_relative 'display.rb'
 
 module View
   class Player
-    def self.give_name(path, players_number)
+    def self.give_name(path, method, players_number)
       names = Nokogiri::HTML::Builder.new do |doc|
 
         doc.html  do
@@ -21,7 +21,7 @@ module View
               View::Setting.jumbotron(doc, head: "My name is Bond...", body: "You're about to rule the galaxy, but what's your name again ?")
 
               View::Setting.title_h2(doc, "Write your name#{players_number > 1 ? "s" : ""}")
-              doc.form :action => path, :method => 'POST', :class => "form-horizontal" do
+              doc.form :action => path, :method => method, :class => "form-horizontal" do
                 players_number.times do |x|
                   View::Text.form(doc, label: "Name of player #{x+1}:", placeholder: "Name ?", name: "player_name#{x+1}")
                 end
@@ -35,7 +35,7 @@ module View
       [names.to_html]
     end
 
-    def self.begin_discard(path)
+    def self.begin_discard(path, method)
       begin_discard = Nokogiri::HTML::Builder.new do |doc|
 
         doc.html do
@@ -49,7 +49,7 @@ module View
             doc.div View::Setting.container do
               View::Setting.jumbotron(doc, head: "To draw or not to draw", body: "Each player is about to draw 6 cards and discard 2 among them. Choose wisely and don't forget that your money is also your hand ! Good luck warrior !")
 
-              doc.form :action => path, :method => "POST", :class => "form-horizontal" do
+              doc.form :action => path, :method => method, :class => "form-horizontal" do
                 View::Button.confirm(doc, value: "Understood, let's go !")
               end
               View::Picture.alien(doc)
@@ -60,7 +60,7 @@ module View
       [begin_discard.to_html]
     end
 
-    def self.introduce(path, player)
+    def self.introduce(path, method, player)
       introduce = Nokogiri::HTML::Builder.new do |doc|
 
         doc.html do
@@ -74,7 +74,7 @@ module View
             doc.div View::Setting.container do
               View::Setting.jumbotron(doc, head: "#{player}, it's your turn !", body: "Six cards will be drawn for you.")
 
-              doc.form :action => path, :method => "POST", :class => "form-horizontal" do
+              doc.form :action => path, :method => method, :class => "form-horizontal" do
                 View::Button.confirm(doc, value: "See my 6 cards")
               end
               View::Picture.alien(doc)
@@ -85,7 +85,7 @@ module View
       [introduce.to_html]
     end
 
-    def self.discard_cards(path, player_name, player_hand )
+    def self.discard_cards(path, method, player_name, player_hand )
       discard = Nokogiri::HTML::Builder.new do |doc|
 
         doc.html do
@@ -99,7 +99,7 @@ module View
             doc.div View::Setting.container do
               View::Setting.jumbotron(doc, head: "#{player_name}, discard 2 cards", body: "Six cards have been drawn, please discard two. The other four will go in your hand.")
 
-              doc.form :action => path, :method => "POST", :class => "form-horizontal" do
+              doc.form :action => path, :method => method, :class => "form-horizontal" do
                 View::Display.hand(doc, player_hand, discard_parameter: "enabled")
                 View::Button.confirm(doc, value: "Confirm discarded cards")
               end

@@ -10,15 +10,13 @@ require_relative '../models/tableau.rb'
 
 module Service
   class Player
-    def self.number(request)
-      request.POST.values.first.to_i
-    end
-
-    def self.introduce(request)
+    def self.marshal_introduce(request)
       if request.POST != {}
         State.apply_discard(request)
       end
+    end
 
+    def self.introduce(request)
       id = Session.id(request)
       state = State.unmarshal(id)
       board = state.to_board
@@ -32,7 +30,6 @@ module Service
       state = State.unmarshal(id)
       board = state.to_board
       path = Session.next_action(board.count_players_havent_discard)
-      #actualise board ?
       player = board.next_player_to_discard
 
       [path, IntroducePlayer.new(player)]

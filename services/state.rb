@@ -9,6 +9,7 @@ require_relative '../models/tableau.rb'
 
 module Service
   ID = "id"
+  PLAYERS_NUMBER = "players_number"
   PLAYERS = "players"
   STACK = "stack"
   GRAVEYARD = "graveyard"
@@ -32,6 +33,19 @@ module Service
       names = request.POST.values
       board = Model::Board.initialize_game(names)
       State.from_board(id, board).marshal
+    end
+
+    def self.marshal_players_number(request)
+      id = Session.id(request)
+      players_number = {PLAYERS_NUMBER => request.POST.values.first.to_i}
+      File.write("#{id}.yml", players_number.to_yaml)
+    end
+
+    def self.players_number(request)
+      id = Session.id(request)
+      data = YAML.load(File.read("#{id}.yml"))
+      File.delete("#{id}.yml")
+      data[PLAYERS_NUMBER]
     end
 
     def marshal

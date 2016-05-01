@@ -27,6 +27,15 @@ class StateTest < Minitest::Test
     File.delete("#{@@id}.yml")
   end
 
+  def test_players_number
+    player_number = "2"
+    env = Rack::MockRequest.env_for("", "HTTP_COOKIE" => "session=#{@@id}", "REQUEST_METHOD" => "POST", :input => "number=#{player_number}")
+    req = Rack::Request.new(env)
+    Service::State.marshal_players_number(req)
+
+    assert_equal(2, Service::State.players_number(req))
+  end
+
   def test_record_watch
     @@state.record
     state_test = Service::State.watch(@@id)

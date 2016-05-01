@@ -3,7 +3,11 @@ require 'pry'
 
 class RFTG
   def self.call(env)
-    status = 200
+    request = Rack::Request.new(env)
+    method = request.request_method
+
+    status = method == "POST" ? 302 : 200
+
     headers = {"Content-Type" => "text/html", "Set-Cookie" => "#{Router::SESSION}=#{Router::SESSION_ID}"}
     body = Router::Controller.select_body(env)
 

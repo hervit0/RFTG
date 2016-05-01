@@ -15,13 +15,6 @@ class PlayersTest < Minitest::Test
   graveyard = Model::Graveyard.empty
   @@state = Service::State.new(@@id, players, stack, graveyard)
 
-  def test_player_number
-    player_number = "2"
-    env = Rack::MockRequest.env_for("", "REQUEST_METHOD" => "POST", :input => "number=#{player_number}")
-    req = Rack::Request.new(env)
-
-    assert_equal(2, Service::Player.number(req))
-  end
 
   def test_present
     @@state.record
