@@ -10,6 +10,7 @@ class BoardTest < Minitest::Test
     Model::Player.new("player 2", Model::Hand.new(CARDS), Model::Tableau.empty)]
   STACK = Model::Stack.new([])
   GRAVEYARD = Model::Graveyard.empty
+    BOARD = Model::Board.new(PLAYERS, STACK, GRAVEYARD)
 
   def test_initialize_game
     players_names = ["boule", "bill"]
@@ -19,11 +20,21 @@ class BoardTest < Minitest::Test
     assert_equal("Bill", board.players[1].name)
   end
 
+  def test_count_players_havent_discard
+    assert_equal(1, BOARD.count_players_havent_discard)
+  end
+
   def test_next_player_to_discard
-    board = Model::Board.new(PLAYERS, STACK, GRAVEYARD)
-    next_player = board.next_player_to_discard
+    next_player = BOARD.next_player_to_discard
 
     assert_equal("player 2", next_player.name)
     assert_equal([], next_player.tableau.cards)
+  end
+
+  def test_make_player_discard
+    new_board = BOARD.make_player_discard(1, 2)
+    player_2_hand = new_board.players[1].hand.cards.map{ |x| x.id }
+
+    assert_equal([3, 4, 5, 6], player_2_hand)
   end
 end

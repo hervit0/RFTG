@@ -4,47 +4,45 @@ require_relative '../../services/players.rb'
 require_relative '../../services/state.rb'
 
 class PlayersTest < Minitest::Test
-  @@id = "id_test"
-  cards = (1..6).to_a.map do |x|
+  ID = "id_test"
+  CARDS = (1..6).to_a.map do |x|
     Model::Card.new(name: "card: #{x}", id: x,  cost: x, victory_points: x)
   end
-  players = [
+  PLAYERS = [
     Model::Player.new("player 1", Model::Hand.empty, Model::Tableau.empty),
-    Model::Player.new("player 2", Model::Hand.new(cards), Model::Tableau.empty)]
+    Model::Player.new("player 2", Model::Hand.new(CARDS), Model::Tableau.empty)]
   stack = Model::Stack.new([])
   graveyard = Model::Graveyard.empty
-  @@state = Service::State.new(@@id, players, stack, graveyard)
+  STATE = Service::State.new(ID, PLAYERS, stack, graveyard)
+  ENVIRONMENT = Rack::MockRequest.env_for("", "HTTP_COOKIE" => "session=#{ID}", "REQUEST_METHOD" => "POST", :input => "first=1&second=6")
 
+  def test_introduce
+    STATE.marshal
+    request = Rack::Request.new(ENVIRONMENT)
+    next_player = Service::Player.introduce(request)
+    id_cards = next_player.hand.map{ |x| x[Service::ID] }
 
-  def test_present
-    @@state.record
-    env = Rack::MockRequest.env_for("", "HTTP_COOKIE" => "session=#{@@id}", "REQUEST_METHOD" => "POST")
-    req = Rack::Request.new(env)
-    player_name, player_hand = Service::Player.present(req)
-    id_cards = player_hand.map{ |x| x["id"] }
-
-    assert_equal("player 2", player_name)
+    assert_equal("player 2", next_player.name)
     assert_equal([1, 2, 3, 4, 5, 6], id_cards)
-    File.delete("#{@@id}.yml")
+    File.delete("#{ID}.yml")
   end
 
-  def test_show_kept_cards
-    @@state.record
-    env = Rack::MockRequest.env_for("", "HTTP_COOKIE" => "session=#{@@id}", "REQUEST_METHOD" => "POST", :input => "first=1&second=6")
-    req = Rack::Request.new(env)
-    action, player_name, player_hand = Service::Player.show_kept_cards(req)
-    id_cards = player_hand.map{ |x| x["id"] }
+  def test_discard
+    STATE.marshal
+    request = Rack::Request.new(ENVIRONMENT)
+    path, player = Service::Player.discard(request)
+    id_cards = player.hand.map{ |x| x[Service::ID] }
 
-    assert_equal(Router::PATH_CHOOSE_PHASES, action)
-    assert_equal("player 2", player_name)
-    assert_equal([2, 3, 4, 5], id_cards)
-    File.delete("#{@@id}.yml")
+    assert_equal(Router::Path::CHOOSE_PHASES, path)
+    assert_equal("player 2", player.name)
+    assert_equal([1, 2, 3, 4, 5, 6], id_cards)
+    File.delete("#{ID}.yml")
   end
 
-  def test_next_players
-    player_index, player_name = Service::Player.send(:next_player, @@state)
+  def test_introduce_player
+    player = Service::IntroducePlayer.new(PLAYERS[0])
 
-    assert_equal(1, player_index)
-    assert_equal("player 2", player_name)
+    assert_equal("player 1", player.name)
+    assert_equal([], player.hand)
   end
 end

@@ -9,6 +9,7 @@ class RFTG
     status = method == "POST" ? 302 : 200
 
     headers = {"Content-Type" => "text/html", "Set-Cookie" => "#{Router::SESSION}=#{Router::SESSION_ID}"}
+
     body = Router::Controller.select_body(env)
 
     response = Rack::Response.new(body, status, headers)

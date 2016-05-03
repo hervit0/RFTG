@@ -46,7 +46,7 @@ module Model
       new_player, new_graveyard = player.choose_first_cards(@graveyard, first_card, second_card)
       index_player = @players.index(player)
       new_players = @players.map.with_index{ |x, i| i == index_player ? new_player : x }
-      [Board.new(new_players, @stack, new_graveyard), index_player]
+      Board.new(new_players, @stack, new_graveyard)
     end
   end
 end
