@@ -72,7 +72,7 @@ module View
             View::Setting.main_navbar(doc)
 
             doc.div View::Setting.container do
-              View::Setting.jumbotron(doc, head: "#{player}, it's your turn !", body: "Six cards will be drawn for you.")
+              View::Setting.jumbotron(doc, head: "#{player}, it's your turn !", body: "Six cards will be drawn for you, from the galaxy with love.")
 
               doc.form :action => path, :method => method, :class => "form-horizontal" do
                 View::Button.confirm(doc, value: "See my 6 cards")

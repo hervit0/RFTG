@@ -25,20 +25,20 @@ module View
               Picture.presentation(doc)
 
               Setting.title_h2(doc, "Rules")
-              doc.p "Race for the galaxy is game released by Rio Grande Game. Rules can be found here:"
+              doc.p "Race for the galaxy is a game released by Rio Grande Game. Rules can be found here:"
               doc.a :href => "http://riograndegames.com/uploads/Game/Game_240_gameRules.pdf"  do
                 Picture.rules(doc)
               end
 
               Setting.title_h2(doc, "Let's play")
-              doc.p 'Please enter the number of players for this game.'
+              doc.p 'Please select the number of players for this game.'
 
               doc.form :action => path, :method => method, :class => "form-horizontal" do
-                Text.form(doc, label: "Number of player", placeholder: "4 players max.", name: "player_number")
+                Button.number_players(doc, players_number: 4)
                 Button.confirm_form(doc, value: "Confirm number of player")
               end
-            end
           end
+            end
         end
       end
       [welcome.to_html]

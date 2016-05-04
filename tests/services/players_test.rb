@@ -19,30 +19,12 @@ class PlayersTest < Minitest::Test
   def test_introduce
     STATE.marshal
     request = Rack::Request.new(ENVIRONMENT)
-    next_player = Service::Player.introduce(request)
-    id_cards = next_player.hand.map{ |x| x[Service::ID] }
-
-    assert_equal("player 2", next_player.name)
-    assert_equal([1, 2, 3, 4, 5, 6], id_cards)
-    File.delete("#{ID}.yml")
-  end
-
-  def test_discard
-    STATE.marshal
-    request = Rack::Request.new(ENVIRONMENT)
-    path, player = Service::Player.discard(request)
+    path, player = Service::Player.introduce(request)
     id_cards = player.hand.map{ |x| x[Service::ID] }
 
     assert_equal(Router::Path::CHOOSE_PHASES, path)
     assert_equal("player 2", player.name)
     assert_equal([1, 2, 3, 4, 5, 6], id_cards)
     File.delete("#{ID}.yml")
-  end
-
-  def test_introduce_player
-    player = Service::IntroducePlayer.new(PLAYERS[0])
-
-    assert_equal("player 1", player.name)
-    assert_equal([], player.hand)
   end
 end

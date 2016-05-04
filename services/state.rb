@@ -1,5 +1,6 @@
 require 'yaml'
 require_relative 'session.rb'
+require_relative '../errors.rb'
 require_relative '../models/player.rb'
 require_relative '../models/stack.rb'
 require_relative '../models/hand.rb'
@@ -37,8 +38,9 @@ module Service
 
     def self.marshal_players_number(request)
       id = Session.id(request)
-      players_number = {PLAYERS_NUMBER => request.POST.values.first.to_i}
-      File.write("#{id}.yml", players_number.to_yaml)
+      Error::Control.number_of_players(request)
+      players_number = request.POST.values.first.to_i
+      File.write("#{id}.yml", {PLAYERS_NUMBER => players_number}.to_yaml)
     end
 
     def self.players_number(request)
@@ -51,9 +53,9 @@ module Service
     def marshal
       state = {
         ID => @id,
-        PLAYERS => Detail.players(@players),
-        STACK => Detail.cards(@stack.cards),
-        GRAVEYARD => Detail.cards(@graveyard.cards)
+        PLAYERS => Players.marshal_from(@players),
+        STACK => Cards.marshal_from(@stack.cards),
+        GRAVEYARD => Cards.marshal_from(@graveyard.cards)
       }
       File.write("#{@id}.yml", state.to_yaml)
     end
@@ -61,9 +63,9 @@ module Service
     def self.unmarshal(id)
       state = YAML.load(File.read("#{id}.yml"))
       id = state[ID]
-      players = Create.new_players(state[PLAYERS])
-      stack = Model::Stack.new(Create.new_cards(state[STACK]))
-      graveyard = Model::Graveyard.new(Create.new_cards(state[GRAVEYARD]))
+      players = Players.unmarshal_from(state[PLAYERS])
+      stack = Model::Stack.new(Cards.unmarshal_from(state[STACK]))
+      graveyard = Model::Graveyard.new(Cards.unmarshal_from(state[GRAVEYARD]))
       State.new(id, players, stack, graveyard)
     end
 
@@ -79,22 +81,15 @@ module Service
       id = Session.id(request)
       state = State.unmarshal(id)
       board = state.to_board
+      Error::Control.discarded_cards(request)
       first_card, second_card = request.POST.values.map{ |x| x.to_i }
       new_board = board.make_player_discard(first_card, second_card)
       State.from_board(id, new_board).marshal
     end
   end
 
-  class Detail
-    def self.players(players)
-      players.map do |x|
-        {NAME => x.name,
-         HAND => Detail.cards(x.hand.cards),
-         TABLEAU => Detail.cards(x.tableau.cards)}
-      end
-    end
-
-    def self.cards(cards)
+  class Cards
+    def self.marshal_from(cards)
       cards.map do |x|
         {NAME => x.name,
          ID => x.id,
@@ -103,26 +98,34 @@ module Service
         }
       end
     end
-  end
 
-  class Create
-    def self.new_players(players)
-      players.map do |x|
-        Model::Player.new(
-          x.fetch(NAME),
-          Model::Hand.new(Create.new_cards(x.fetch(HAND))),
-          Model::Tableau.new(Create.new_cards(x.fetch(TABLEAU)))
-        )
-      end
-    end
-
-    def self.new_cards(cards)
+    def self.unmarshal_from(cards)
       cards.map do |x|
         Model::Card.new(
           name: x.fetch(NAME),
           id: x.fetch(ID),
           cost: x.fetch(COST),
           victory_points: x.fetch(VICTORY_POINTS)
+        )
+      end
+    end
+  end
+
+  class Players
+    def self.marshal_from(players)
+      players.map do |x|
+        {NAME => x.name,
+         HAND => Cards.marshal_from(x.hand.cards),
+         TABLEAU => Cards.marshal_from(x.tableau.cards)}
+      end
+    end
+
+    def self.unmarshal_from(players)
+      players.map do |x|
+        Model::Player.new(
+          x.fetch(NAME),
+          Model::Hand.new(Cards.unmarshal_from(x.fetch(HAND))),
+          Model::Tableau.new(Cards.unmarshal_from(x.fetch(TABLEAU)))
         )
       end
     end

@@ -50,11 +50,11 @@ module Router
         View::Blank.show
 
       elsif key(Path::INTRODUCE_PLAYER, Method::GET)
-        player = Service::Player.introduce(request)
+        path, player = Service::Player.introduce(request)
         View::Player.introduce(Path::DISCARD, Method::GET, player.name)
 
       elsif key(Path::DISCARD, Method::GET)
-        path, player = Service::Player.discard(request)
+        path, player = Service::Player.introduce(request)
         View::Player.discard_cards(path, Method::POST, player.name, player.hand)
 
       elsif key(Path::CHOOSE_PHASES, Method::POST)
