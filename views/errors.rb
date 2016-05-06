@@ -6,7 +6,7 @@ require_relative 'text_input.rb'
 
 module View
   class Error
-    def self.badrequest
+    def self.badrequest(message)
       error = Nokogiri::HTML::Builder.new do |doc|
         doc.html do
           doc.head do
@@ -16,7 +16,8 @@ module View
           doc.body Setting.body  do
             Setting.main_navbar(doc)
             doc.div Setting.container do
-              Setting.jumbotron(doc, head: "Bad request", body: "Please review your inputs.")
+              Setting.jumbotron(doc, head: "Bad request !", body: message)
+              Button.go_back(doc)
               Picture.error(doc)
             end
           end

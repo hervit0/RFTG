@@ -11,9 +11,13 @@ module View
     def self.confirm_form(doc, value:)
       doc.div :class => "form-group" do
         doc.div :class => "col-sm-offset-2 col-sm-10" do
-          doc.input :type => "submit", :class => "btn btn-success", :value => value
-        end
+          doc.input :type => "submit", :class => "btn btn-success", :value => value        end
       end
+    end
+
+    def self.go_back(doc)
+      doc.input :type => "submit", :class => "btn btn-danger", :value => "Go back", :onClick => "history.go(-1);return true"
+
     end
 
     def self.number_players(doc, players_number:)

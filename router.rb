@@ -1,4 +1,5 @@
 require 'yaml'
+require_relative 'errors.rb'
 require_relative 'control/players.rb'
 require_relative 'control/state.rb'
 require_relative 'control/session.rb'
@@ -53,7 +54,7 @@ module Router
         View::Player.begin_discard(Path::INTRODUCE_PLAYER, Method::POST)
 
       elsif key(Path::INTRODUCE_PLAYER, Method::POST)
-        cards = Control::Player.initial_cards(request)
+        cards = Control::Players.initial_cards(request)
         Service::Player.choose_initial_cards(id, cards)
         View::Blank.show
 
@@ -79,10 +80,33 @@ module Router
       end
     end
 
-    def self.error(status)
-      if status == 404
-        View::Error.badrequest
-      end
+    def self.error(error_type)
+      errors_messages = {
+        Error::EmptyPost =>
+        "No data received ! ",
+          Error::NoPlayersNames =>
+        "No name was given, so sad !",
+          Error::NoCookieInRequest =>
+        "Problem about cookies, did you allow its?",
+          Error::NoSessionID =>
+        "Problem about session, did you allow cookies?",
+          Error::NotInteger =>
+        "Sorry, integer was excepted...",
+          Error::UnexpectedNumberOfInputs =>
+        "Did you send the correct number of inputs ?",
+          Error::UnexpectedNumberOfCards =>
+        "Did you choose 2 cards among 6 cards ?",
+          Error::TooManyPlayers =>
+        "Warning, RFTG is designed for only 4 players",
+          Error::NotEnoughPlayers =>
+        "At least 2 players are expected.",
+        Error::UnavailableIndexOfCard =>
+        "Did you choose among the six cards ?"
+      }
+
+      message = errors_messages.values_at(error_type).shift
+
+      [404, View::Error.badrequest(message)]
     end
 
     def self.key(current_path, current_method)

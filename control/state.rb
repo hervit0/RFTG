@@ -21,13 +21,17 @@ module Control
 
     def self.players_names(request)
       raise Error::EmptyPost if request.POST == {}
-      request.POST.values
+      names = request.POST.values
+      names.each do |name|
+        raise Error::NoPlayersNames if name.delete(" ").empty?
+      end
+      names
     end
 
     def self.discarded_cards(request)
       raise Error::EmptyPost if request.POST == {}
       result = request.POST.values
-      raise Error::UnexpectedNumberOfInputs if result.size != NUMBER_OF_DISCARDED_CARDS
+      raise Error::UnexpectedNumberOfCards if result.size != NUMBER_OF_DISCARDED_CARDS
       result.each do |x|
         raise Error::NotInteger if x.to_i.to_s != x
       end

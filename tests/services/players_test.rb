@@ -18,8 +18,7 @@ class PlayersTest < Minitest::Test
 
   def test_introduce
     STATE.marshal
-    request = Rack::Request.new(ENVIRONMENT)
-    path, player = Service::Player.introduce(request)
+    path, player = Service::Player.introduce(ID)
     id_cards = player.hand.map{ |x| x[Service::ID] }
 
     assert_equal(Router::Path::CHOOSE_PHASES, path)

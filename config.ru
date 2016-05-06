@@ -11,9 +11,8 @@ class RFTG
 
     begin
       body = Router::Controller.select_body(env)
-    rescue RuntimeError
-      status = 404
-      body = Router::Controller.error(status)
+    rescue ArgumentError, TypeError, RangeError, IndexError => error
+      status, body = Router::Controller.error(error.class)
     else
       status = method == "POST" ? 302 : 200
     end

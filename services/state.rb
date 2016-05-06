@@ -34,7 +34,7 @@ module Service
     def self.players_number(id)
       data = YAML.load(File.read("#{id}.yml"))
       File.delete("#{id}.yml")
-      data[PLAYERS_NUMBER]
+      data[PLAYERS_NUMBER].to_i
     end
 
     def self.initialize_game(id, names)
