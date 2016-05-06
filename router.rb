@@ -1,10 +1,14 @@
 require 'yaml'
+require_relative 'control/players.rb'
+require_relative 'control/state.rb'
+require_relative 'control/session.rb'
 require_relative 'services/players.rb'
 require_relative 'services/state.rb'
 require_relative 'views/welcome.rb'
 require_relative 'views/blank.rb'
 require_relative 'views/player.rb'
 require_relative 'views/phases.rb'
+require_relative 'views/errors.rb'
 
 module Router
   SESSION = "session"
@@ -29,36 +33,41 @@ module Router
       request = Rack::Request.new(env)
       @method = request.request_method
       @path = request.path
+      id = Control::Session.id(request)
 
       if key(Path::PLAYERS_NAMES, Method::POST)
-        Service::State.marshal_players_number(request)
+        players_number = Control::State.players_number(request)
+        Service::State.marshal_players_number(id, players_number)
         View::Blank.show
 
       elsif key(Path::PLAYERS_NAMES, Method::GET)
-        players_number = Service::State.players_number(request)
+        players_number = Service::State.players_number(id)
         View::Player.give_name(Path::BEGIN_DISCARD, Method::POST, players_number)
 
       elsif key(Path::BEGIN_DISCARD, Method::POST)
-        Service::State.initialize_game(request)
+        players_names = Control::State.players_names(request)
+        Service::State.initialize_game(id, players_names)
         View::Blank.show
 
       elsif key(Path::BEGIN_DISCARD, Method::GET)
         View::Player.begin_discard(Path::INTRODUCE_PLAYER, Method::POST)
 
       elsif key(Path::INTRODUCE_PLAYER, Method::POST)
-        Service::Player.marshal_introduce(request)
+        cards = Control::Player.initial_cards(request)
+        Service::Player.choose_initial_cards(id, cards)
         View::Blank.show
 
       elsif key(Path::INTRODUCE_PLAYER, Method::GET)
-        path, player = Service::Player.introduce(request)
+        path, player = Service::Player.introduce(id)
         View::Player.introduce(Path::DISCARD, Method::GET, player.name)
 
       elsif key(Path::DISCARD, Method::GET)
-        path, player = Service::Player.introduce(request)
+        path, player = Service::Player.introduce(id)
         View::Player.discard_cards(path, Method::POST, player.name, player.hand)
 
       elsif key(Path::CHOOSE_PHASES, Method::POST)
-        Service::State.apply_discard(request)
+        first_card, second_card = Control::State.discarded_cards(request)
+        Service::State.make_player_discard(id, first_card, second_card)
         View::Blank.show
 
       elsif key(Path::CHOOSE_PHASES, Method::GET)
@@ -66,6 +75,13 @@ module Router
 
       else
         View::Welcome.display(Path::PLAYERS_NAMES, Method::POST)
+
+      end
+    end
+
+    def self.error(status)
+      if status == 404
+        View::Error.badrequest
       end
     end
 

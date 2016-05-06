@@ -72,7 +72,7 @@ class StateTest < Minitest::Test
     File.delete("#{ID}.yml")
   end
 
-  def test_control_players_number
+  def test_discarded_cards
     STATE.marshal
     {Error::EmptyPost => "",
      Error::UnexpectedNumberOfInputs => "first=1&second=2&third=3",

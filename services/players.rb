@@ -12,14 +12,14 @@ module Service
   class Player
     Player = Struct.new(:name, :hand)
 
-    def self.marshal_introduce(request)
-      if request.POST != {}
-        State.apply_discard(request)
+    def self.choose_initial_cards(id, cards)
+      if cards != :empty
+        first_card, second_card = cards
+        State.make_player_discard(id, first_card, second_card)
       end
     end
 
-    def self.introduce(request)
-      id = Session.id(request)
+    def self.introduce(id)
       state = State.unmarshal(id)
       board = state.to_board
       path = Session.next_action(board.count_players_havent_discard)

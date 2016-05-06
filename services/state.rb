@@ -1,6 +1,4 @@
 require 'yaml'
-require_relative 'session.rb'
-require_relative '../errors.rb'
 require_relative '../models/player.rb'
 require_relative '../models/stack.rb'
 require_relative '../models/hand.rb'
@@ -29,25 +27,19 @@ module Service
       @graveyard = graveyard
     end
 
-    def self.initialize_game(request)
-      id = Session.id(request)
-      names = request.POST.values
-      board = Model::Board.initialize_game(names)
-      State.from_board(id, board).marshal
-    end
-
-    def self.marshal_players_number(request)
-      id = Session.id(request)
-      Error::Control.number_of_players(request)
-      players_number = request.POST.values.first.to_i
+    def self.marshal_players_number(id, players_number)
       File.write("#{id}.yml", {PLAYERS_NUMBER => players_number}.to_yaml)
     end
 
-    def self.players_number(request)
-      id = Session.id(request)
+    def self.players_number(id)
       data = YAML.load(File.read("#{id}.yml"))
       File.delete("#{id}.yml")
       data[PLAYERS_NUMBER]
+    end
+
+    def self.initialize_game(id, names)
+      board = Model::Board.initialize_game(names)
+      State.from_board(id, board).marshal
     end
 
     def marshal
@@ -62,11 +54,11 @@ module Service
 
     def self.unmarshal(id)
       state = YAML.load(File.read("#{id}.yml"))
-      id = state[ID]
+      id_session = state[ID]
       players = Players.unmarshal_from(state[PLAYERS])
       stack = Model::Stack.new(Cards.unmarshal_from(state[STACK]))
       graveyard = Model::Graveyard.new(Cards.unmarshal_from(state[GRAVEYARD]))
-      State.new(id, players, stack, graveyard)
+      State.new(id_session, players, stack, graveyard)
     end
 
     def to_board
@@ -77,12 +69,9 @@ module Service
       State.new(id, board.players, board.stack, board.graveyard)
     end
 
-    def self.apply_discard(request)
-      id = Session.id(request)
+    def self.make_player_discard(id, first_card, second_card)
       state = State.unmarshal(id)
       board = state.to_board
-      Error::Control.discarded_cards(request)
-      first_card, second_card = request.POST.values.map{ |x| x.to_i }
       new_board = board.make_player_discard(first_card, second_card)
       State.from_board(id, new_board).marshal
     end
