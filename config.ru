@@ -1,17 +1,28 @@
-require_relative 'board.rb'
-require_relative 'card.rb'
+require_relative 'router.rb'
 
 class RFTG
   def self.call(env)
-    board = Board.new(Stack.from_cards(CARDS))
-    names = board.stack.cards.map{ |x| x.name}
+    request = Rack::Request.new(env)
+    method = request.request_method
 
-    status = 200
-    headers = {"Content-Type" => "text/plain"}
-    body = names
 
-    [status, headers, body]
+    headers = {"Content-Type" => "text/html", "Set-Cookie" => "#{Router::SESSION}=#{Router::SESSION_ID}"}
+
+    begin
+      body = Router::Controller.select_body(env)
+    rescue ArgumentError, TypeError, RangeError, IndexError => error
+      status, body = Router::Controller.error(error.class)
+    else
+      status = method == "POST" ? 302 : 200
+    end
+
+    response = Rack::Response.new(body, status, headers)
+    response.finish
   end
 end
+
+use Rack::Static,
+  :urls => ['/css'],
+  :root => '.'
 
 run RFTG
