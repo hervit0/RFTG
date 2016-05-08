@@ -1,5 +1,4 @@
 require_relative 'router.rb'
-require 'pry'
 
 class RFTG
   def self.call(env)
