@@ -1,10 +1,10 @@
-require 'yaml'
 require_relative '../models/player.rb'
 require_relative '../models/stack.rb'
 require_relative '../models/hand.rb'
 require_relative '../models/card.rb'
 require_relative '../models/graveyard.rb'
 require_relative '../models/tableau.rb'
+require_relative '../persistence/persistence.rb'
 
 module Service
   ID = "id"
@@ -28,13 +28,14 @@ module Service
     end
 
     def self.marshal_players_number(id, players_number)
-      File.write("#{id}.yml", {PLAYERS_NUMBER => players_number}.to_yaml)
+      number = {PLAYERS_NUMBER => players_number}
+      Persistence::Database.marshal_players_number(id, number)
     end
 
     def self.players_number(id)
-      data = YAML.load(File.read("#{id}.yml"))
-      File.delete("#{id}.yml")
-      data[PLAYERS_NUMBER].to_i
+       number = Persistence::Database.unmarshal_players_number(id)
+       p number
+      number[PLAYERS_NUMBER].to_i
     end
 
     def self.initialize_game(id, names)
@@ -49,11 +50,11 @@ module Service
         STACK => Cards.marshal_from(@stack.cards),
         GRAVEYARD => Cards.marshal_from(@graveyard.cards)
       }
-      File.write("#{@id}.yml", state.to_yaml)
+      Persistence::Database.marshal_state(@id, state)
     end
 
     def self.unmarshal(id)
-      state = YAML.load(File.read("#{id}.yml"))
+      state = Persistence::Database.unmarshal_state(id)
       id_session = state[ID]
       players = Players.unmarshal_from(state[PLAYERS])
       stack = Model::Stack.new(Cards.unmarshal_from(state[STACK]))
