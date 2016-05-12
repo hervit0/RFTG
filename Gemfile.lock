@@ -2,16 +2,22 @@ GEM
   remote: https://rubygems.org/
   specs:
     bson (4.1.1)
+    mini_portile2 (2.0.0)
     mongo (2.2.5)
       bson (~> 4.0)
+    nokogiri (1.6.7.2)
+      mini_portile2 (~> 2.0.0.rc2)
     rack (1.6.4)
+    rake (10.4.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   mongo
+  nokogiri
   rack
+  rake
 
 BUNDLED WITH
    1.11.2
