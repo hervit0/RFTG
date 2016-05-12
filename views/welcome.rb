@@ -5,6 +5,8 @@ require_relative 'buttons.rb'
 require_relative 'text_input.rb'
 
 module View
+  RULES_LINK = "http://riograndegames.com/uploads/Game/Game_240_gameRules.pdf"
+
   class Welcome
     def self.display(path, method)
       welcome = Nokogiri::HTML::Builder.new do |doc|
@@ -26,7 +28,7 @@ module View
 
               Setting.title_h2(doc, "Rules")
               doc.p "Race for the galaxy is a game released by Rio Grande Game. Rules can be found here:"
-              doc.a :href => "http://riograndegames.com/uploads/Game/Game_240_gameRules.pdf"  do
+              doc.a :href => RULES_LINK, :target => "_blank" do
                 Picture.rules(doc)
               end
 

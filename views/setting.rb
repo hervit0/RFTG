@@ -32,14 +32,15 @@ module View
           end
           doc.div :id => "navbar", :class =>"navbar-collapse collapse" do
             doc.ul :class => "nav navbar-nav" do
-              doc.li do 
-                doc.a "Home", :href => "#", :style => "padding-bottom:5px"
-              end
-              doc.li do 
-                doc.a "Rules", :href => "#", :style => "padding-bottom:5px"
-              end
-              doc.li do 
-                doc.a "About", :href => "#", :style => "padding-bottom:5px"
+              navbar = {
+                "Home" => "/welcome",
+                "Rules" => RULES_LINK,
+                "About" => "/welcome"
+              }
+              navbar.each do |key, value|
+                doc.li do
+                  doc.a key, :href => value, :style => "padding-bottom:5px"
+                end
               end
             end
           end

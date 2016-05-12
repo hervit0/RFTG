@@ -29,12 +29,11 @@ module Service
 
     def self.marshal_players_number(id, players_number)
       number = {PLAYERS_NUMBER => players_number}
-      Persistence::Database.marshal_players_number(id, number)
+      Persistence::Persistence.new(Persistence::MongoStore).save_state(id, number)
     end
 
     def self.players_number(id)
-       number = Persistence::Database.unmarshal_players_number(id)
-       p number
+      number = Persistence::Persistence.new(Persistence::MongoStore).read_state(id)
       number[PLAYERS_NUMBER].to_i
     end
 
@@ -50,11 +49,11 @@ module Service
         STACK => Cards.marshal_from(@stack.cards),
         GRAVEYARD => Cards.marshal_from(@graveyard.cards)
       }
-      Persistence::Database.marshal_state(@id, state)
+      Persistence::Persistence.new(Persistence::MongoStore).save_state(@id, state)
     end
 
     def self.unmarshal(id)
-      state = Persistence::Database.unmarshal_state(id)
+      state = Persistence::Persistence.new(Persistence::MongoStore).read_state(id)
       id_session = state[ID]
       players = Players.unmarshal_from(state[PLAYERS])
       stack = Model::Stack.new(Cards.unmarshal_from(state[STACK]))
