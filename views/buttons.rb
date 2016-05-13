@@ -1,17 +1,11 @@
 module View
   class Button
-    def self.confirm(doc, value:)
+    def self.confirm(doc, type:, value:)
+      align = type == "form" ? "col-sm-offset-2 col-sm-10" : "col-sm-10"
       doc.div :class => "form-group" do
-        doc.div :class => "col-sm-10" do
+        doc.div :class => align do
           doc.input :type => "submit", :class => "btn btn-success", :value => value
         end
-      end
-    end
-
-    def self.confirm_form(doc, value:)
-      doc.div :class => "form-group" do
-        doc.div :class => "col-sm-offset-2 col-sm-10" do
-          doc.input :type => "submit", :class => "btn btn-success", :value => value        end
       end
     end
 

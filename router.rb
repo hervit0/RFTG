@@ -1,5 +1,6 @@
 require 'yaml'
 require_relative 'errors.rb'
+require_relative 'settings.rb'
 require_relative 'control/players.rb'
 require_relative 'control/state.rb'
 require_relative 'control/session.rb'
@@ -31,53 +32,68 @@ module Router
 
   class Controller
     def self.select_body(env)
-      request = Rack::Request.new(env)
-      @method = request.request_method
-      @path = request.path
-      id = Control::Session.id(request)
+      @request = Rack::Request.new(env)
+      @method = @request.request_method
+      @path = @request.path
+      @id = Control::Session.id(@request)
 
-      if key(Path::PLAYERS_NAMES, Method::POST)
-        players_number = Control::State.players_number(request)
-        Service::State.marshal_players_number(id, players_number)
-        View::Blank.show
+      view = select_view do |state|
+        if key(Path::PLAYERS_NAMES, Method::POST)
+          players_number = Control::State.players_number(@request)
+          [Service::State.marshal_players_number(players_number),
+           View::Blank.show]
 
-      elsif key(Path::PLAYERS_NAMES, Method::GET)
-        players_number = Service::State.players_number(id)
-        View::Player.give_name(Path::BEGIN_DISCARD, Method::POST, players_number)
+        elsif key(Path::PLAYERS_NAMES, Method::GET)
+          players_number = Service::State.players_number(state)
+          [state,
+           View::Player.give_name(Path::BEGIN_DISCARD, Method::POST, players_number)]
 
-      elsif key(Path::BEGIN_DISCARD, Method::POST)
-        players_names = Control::State.players_names(request)
-        Service::State.initialize_game(id, players_names)
-        View::Blank.show
+        elsif key(Path::BEGIN_DISCARD, Method::POST)
+          players_names = Control::State.players_names(@request)
+          [Service::State.initialize_game(players_names),
+           View::Blank.show]
 
-      elsif key(Path::BEGIN_DISCARD, Method::GET)
-        View::Player.begin_discard(Path::INTRODUCE_PLAYER, Method::POST)
+        elsif key(Path::BEGIN_DISCARD, Method::GET)
+          [state,
+           View::Player.begin_discard(Path::INTRODUCE_PLAYER, Method::POST)]
 
-      elsif key(Path::INTRODUCE_PLAYER, Method::POST)
-        cards = Control::Players.initial_cards(request)
-        Service::Player.choose_initial_cards(id, cards)
-        View::Blank.show
+        elsif key(Path::INTRODUCE_PLAYER, Method::POST)
+          cards = Control::Players.initial_cards(@request)
+          [Service::Player.choose_initial_cards(state, cards),
+           View::Blank.show]
 
-      elsif key(Path::INTRODUCE_PLAYER, Method::GET)
-        path, player = Service::Player.introduce(id)
-        View::Player.introduce(Path::DISCARD, Method::GET, player.name)
+        elsif key(Path::INTRODUCE_PLAYER, Method::GET)
+          path, player = Service::Player.introduce(state)
+          [state,
+           View::Player.introduce(Path::DISCARD, Method::GET, player.name)]
 
-      elsif key(Path::DISCARD, Method::GET)
-        path, player = Service::Player.introduce(id)
-        View::Player.discard_cards(path, Method::POST, player.name, player.hand)
+        elsif key(Path::DISCARD, Method::GET)
+          path, player = Service::Player.introduce(state)
+          [state,
+           View::Player.discard_cards(path, Method::POST, player.name, player.hand)]
 
-      elsif key(Path::CHOOSE_PHASES, Method::POST)
-        first_card, second_card = Control::State.discarded_cards(request)
-        Service::State.make_player_discard(id, first_card, second_card)
-        View::Blank.show
+        elsif key(Path::CHOOSE_PHASES, Method::POST)
+          first_card, second_card = Control::State.discarded_cards(@request)
+          [Service::State.make_player_discard(state, first_card, second_card),
+           View::Blank.show]
 
-      elsif key(Path::CHOOSE_PHASES, Method::GET)
-        View::Phase.choose
+        elsif key(Path::CHOOSE_PHASES, Method::GET)
+          [state,
+           View::Phase.choose]
 
-      else
-        View::Welcome.display(Path::PLAYERS_NAMES, Method::POST)
+        else
+          [state,
+           View::Welcome.display(Path::PLAYERS_NAMES, Method::POST)]
 
+        end
       end
+    end
+
+    def self.select_view
+      state = Persistence::Storage.new(Settings::STORAGE_TYPE).read_state(@id)
+      new_state, view = yield state
+      Persistence::Storage.new(Settings::STORAGE_TYPE).save_state(@id, new_state)
+      view
     end
 
     def self.error(error_type)
@@ -100,12 +116,11 @@ module Router
         "Warning, RFTG is designed for only 4 players",
           Error::NotEnoughPlayers =>
         "At least 2 players are expected.",
-        Error::UnavailableIndexOfCard =>
+          Error::UnavailableIndexOfCard =>
         "Did you choose among the six cards ?"
       }
 
       message = errors_messages.values_at(error_type).shift
-
       [404, View::Error.badrequest(message)]
     end
 
@@ -113,7 +128,7 @@ module Router
       @path == current_path && @method == current_method
     end
 
-    private_class_method :key
+    private_class_method :key, :select_view
 
   end
 end

@@ -19,61 +19,53 @@ module Service
   VICTORY_POINTS = "victory_points"
 
   class State
-    attr_reader :id, :players, :stack, :graveyard
-    def initialize(id, players, stack, graveyard)
-      @id = id
+    attr_reader :players, :stack, :graveyard
+    def initialize(players, stack, graveyard)
       @players = players
       @stack = stack
       @graveyard = graveyard
     end
 
-    def self.marshal_players_number(id, players_number)
+    def self.marshal_players_number(players_number)
       number = {PLAYERS_NUMBER => players_number}
-      Persistence::Persistence.new(Persistence::MongoStore).save_state(id, number)
     end
 
-    def self.players_number(id)
-      number = Persistence::Persistence.new(Persistence::MongoStore).read_state(id)
-      number[PLAYERS_NUMBER].to_i
+    def self.players_number(state)
+      state[PLAYERS_NUMBER].to_i
     end
 
-    def self.initialize_game(id, names)
+    def self.initialize_game(names)
       board = Model::Board.initialize_game(names)
-      State.from_board(id, board).marshal
+      State.from_board(board).marshal
     end
 
     def marshal
       state = {
-        ID => @id,
         PLAYERS => Players.marshal_from(@players),
         STACK => Cards.marshal_from(@stack.cards),
         GRAVEYARD => Cards.marshal_from(@graveyard.cards)
       }
-      Persistence::Persistence.new(Persistence::MongoStore).save_state(@id, state)
     end
 
-    def self.unmarshal(id)
-      state = Persistence::Persistence.new(Persistence::MongoStore).read_state(id)
-      id_session = state[ID]
+    def self.unmarshal(state)
       players = Players.unmarshal_from(state[PLAYERS])
       stack = Model::Stack.new(Cards.unmarshal_from(state[STACK]))
       graveyard = Model::Graveyard.new(Cards.unmarshal_from(state[GRAVEYARD]))
-      State.new(id_session, players, stack, graveyard)
+      State.new(players, stack, graveyard)
     end
 
     def to_board
       Model::Board.new(@players, @stack, @graveyard)
     end
 
-    def self.from_board(id, board)
-      State.new(id, board.players, board.stack, board.graveyard)
+    def self.from_board(board)
+      State.new(board.players, board.stack, board.graveyard)
     end
 
-    def self.make_player_discard(id, first_card, second_card)
-      state = State.unmarshal(id)
-      board = state.to_board
+    def self.make_player_discard(state, first_card, second_card)
+      board = State.unmarshal(state).to_board
       new_board = board.make_player_discard(first_card, second_card)
-      State.from_board(id, new_board).marshal
+      State.from_board(new_board).marshal
     end
   end
 

@@ -25,7 +25,7 @@ module View
                 players_number.times do |x|
                   View::Text.form(doc, label: "Name of player #{x+1}:", placeholder: "Name ?", name: "player_name#{x+1}")
                 end
-                View::Button.confirm_form(doc, value: "Confirm names of player")
+                View::Button.confirm(doc, type: "form", value: "Confirm names of player")
               end
             end
             View::Picture.alien(doc)
@@ -50,7 +50,7 @@ module View
               View::Setting.jumbotron(doc, head: "To draw or not to draw", body: "Each player is about to draw 6 cards and discard 2 among them. Choose wisely and don't forget that your money is also your hand ! Good luck warrior !")
 
               doc.form :action => path, :method => method, :class => "form-horizontal" do
-                View::Button.confirm(doc, value: "Understood, let's go !")
+                View::Button.confirm(doc, type: "simple", value: "Understood, let's go !")
               end
               View::Picture.alien(doc)
             end
@@ -75,7 +75,7 @@ module View
               View::Setting.jumbotron(doc, head: "#{player}, it's your turn !", body: "Six cards will be drawn for you, from the galaxy with love.")
 
               doc.form :action => path, :method => method, :class => "form-horizontal" do
-                View::Button.confirm(doc, value: "See my 6 cards")
+                View::Button.confirm(doc, type: "simple", value: "See my 6 cards")
               end
               View::Picture.alien(doc)
             end
@@ -101,7 +101,7 @@ module View
 
               doc.form :action => path, :method => method, :class => "form-horizontal" do
                 View::Display.hand(doc, player_hand, discard_parameter: "enabled")
-                View::Button.confirm(doc, value: "Confirm discarded cards")
+                View::Button.confirm(doc, type: "simple", value: "Confirm discarded cards")
               end
               View::Picture.alien(doc)
             end
@@ -127,7 +127,7 @@ module View
 
               doc.form :action => path, :method => "POST", :class => "form-horizontal" do
                 View::Display.hand(doc, player_hand, discard_parameter: "disabled")
-                View::Button.confirm(doc, value: "OK, next player")
+                View::Button.confirm(doc, type: "simple", value: "OK, next player")
               end
               View::Picture.alien(doc)
             end

@@ -37,7 +37,7 @@ module View
 
               doc.form :action => path, :method => method, :class => "form-horizontal" do
                 Button.number_players(doc, players_number: 4)
-                Button.confirm_form(doc, value: "Confirm number of player")
+                Button.confirm(doc, type: "form", value: "Confirm number of player")
               end
           end
             end

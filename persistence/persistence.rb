@@ -2,7 +2,7 @@ require 'yaml'
 require_relative 'mongo.rb'
 
 module Persistence
-  class Persistence
+  class Storage
     def initialize(store)
       @store = store
     end
