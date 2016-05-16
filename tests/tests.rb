@@ -1,3 +1,6 @@
+require 'codeclimate-test-reporter'
+CodeClimate::TestReporter.start
+
 require_relative 'models/board_test.rb'
 require_relative 'models/card_test.rb'
 require_relative 'models/graveyard_test.rb'

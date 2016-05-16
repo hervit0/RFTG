@@ -16,6 +16,7 @@ engines:
               languages:
                 - ruby
                 - javascript
+
               ratings:
                 exclude_paths:
-                  - views/
+                  - views/*

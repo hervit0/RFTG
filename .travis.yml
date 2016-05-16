@@ -7,3 +7,7 @@ services: mongodb
 
 gemfile:
   - Gemfile
+
+addons:
+  code_climate:
+    repo_token: b3a9aaf67f6377c67ed7d183154e94dd3bd5204c90b02bad080dc98e5bd38a8d bundle exec rake
