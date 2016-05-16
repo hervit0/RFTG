@@ -1,10 +1,10 @@
 require 'minitest/autorun'
 require 'rack'
 require_relative '../../services/state.rb'
+require_relative '../../models/board.rb'
 require_relative '../../errors.rb'
 
 class StateTest < Minitest::Test
-  ID = "id_test"
   CARDS = (1..6).to_a.map do |x|
     Model::Card.new(name: "card: #{x}", id: x,  cost: x, victory_points: x)
   end
@@ -13,7 +13,7 @@ class StateTest < Minitest::Test
     Model::Player.new("player 2", Model::Hand.new(CARDS), Model::Tableau.empty)]
   STACK = Model::Stack.new([])
   GRAVEYARD = Model::Graveyard.empty
-  STATE = Service::State.new(ID, PLAYERS, STACK, GRAVEYARD)
+  STATE = Service::State.new(PLAYERS, STACK, GRAVEYARD)
 
   def self.setup_request(input:)
     env = Rack::MockRequest.env_for("", "HTTP_COOKIE" => "session=#{ID}", "REQUEST_METHOD" => "POST", :input => input)
@@ -22,26 +22,24 @@ class StateTest < Minitest::Test
 
   def test_initialize_game
     names = ["boule", "bill"]
-    Service::State.initialize_game(ID, names)
-    state = Service::State.unmarshal(ID)
+    state_marshalled = Service::State.initialize_game(names)
+    state = Service::State.unmarshal(state_marshalled)
 
     assert_equal("Boule", state.players[0].name)
     assert_equal("Bill", state.players[1].name)
-    File.delete("#{ID}.yml")
   end
 
   def test_players_number
     players_number = "2"
-    Service::State.marshal_players_number(ID, players_number)
+    state = Service::State.marshal_players_number(players_number)
 
-    assert_equal(2, Service::State.players_number(ID))
+    assert_equal(2, Service::State.players_number(state))
   end
 
   def test_marshal_unmarshal
-    STATE.marshal
-    state_test = Service::State.unmarshal(ID)
+    state_marshalled = STATE.marshal
+    state_test = Service::State.unmarshal(state_marshalled)
 
-    assert_equal("id_test", state_test.id)
     assert_equal("player 1", state_test.players[0].name)
     assert_equal("player 2", state_test.players[1].name)
     assert_equal([], state_test.players[0].hand.cards)
@@ -53,7 +51,6 @@ class StateTest < Minitest::Test
     assert_equal([], state_test.players[1].tableau.cards)
     assert_equal([], state_test.stack.cards)
     assert_equal([], state_test.graveyard.cards)
-    File.delete("#{ID}.yml")
   end
 
   def test_cards_marshal_from
@@ -66,8 +63,7 @@ class StateTest < Minitest::Test
   end
 
   def test_cards_unmarshal_from
-    STATE.marshal
-    state_test = YAML.load(File.read("#{ID}.yml"))
+    state_test = STATE.marshal
     hand_of_player2 = state_test[Service::PLAYERS][1][Service::HAND]
     cards_test = Service::Cards.unmarshal_from(hand_of_player2)
 
@@ -75,7 +71,6 @@ class StateTest < Minitest::Test
     assert_equal(2, cards_test[1].id)
     assert_equal(3, cards_test[2].cost)
     assert_equal(4, cards_test[3].victory_points)
-    File.delete("#{ID}.yml")
   end
 
   def test_players_marshal_from
@@ -87,12 +82,10 @@ class StateTest < Minitest::Test
   end
 
   def test_players_unmarshal_from
-    STATE.marshal
-    state_test = YAML.load(File.read("#{ID}.yml"))
+    state_test = STATE.marshal
     players_test = Service::Players.unmarshal_from(state_test[Service::PLAYERS])
 
     assert_equal("player 1", players_test[0].name)
     assert_equal([], players_test[1].tableau.cards)
-    File.delete("#{ID}.yml")
   end
 end

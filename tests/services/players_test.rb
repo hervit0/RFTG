@@ -13,17 +13,16 @@ class PlayersTest < Minitest::Test
     Model::Player.new("player 2", Model::Hand.new(CARDS), Model::Tableau.empty)]
   stack = Model::Stack.new([])
   graveyard = Model::Graveyard.empty
-  STATE = Service::State.new(ID, PLAYERS, stack, graveyard)
+  STATE = Service::State.new(PLAYERS, stack, graveyard)
   ENVIRONMENT = Rack::MockRequest.env_for("", "HTTP_COOKIE" => "session=#{ID}", "REQUEST_METHOD" => "POST", :input => "first=1&second=6")
 
   def test_introduce
-    STATE.marshal
-    path, player = Service::Player.introduce(ID)
+    state = STATE.marshal
+    path, player = Service::Player.introduce(state)
     id_cards = player.hand.map{ |x| x[Service::ID] }
 
     assert_equal(Router::Path::CHOOSE_PHASES, path)
     assert_equal("player 2", player.name)
     assert_equal([1, 2, 3, 4, 5, 6], id_cards)
-    File.delete("#{ID}.yml")
   end
 end
