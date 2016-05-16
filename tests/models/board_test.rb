@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require_relative '../../models/board.rb'
 
-class BoardTest < Minitest::Test
+class BoardTest < Minitest::Unit::TestCase
   CARDS = (1..6).to_a.map do |x|
     Model::Card.new(name: "card: #{x}", id: x,  cost: x, victory_points: x)
   end

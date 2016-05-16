@@ -3,7 +3,7 @@ require 'rack'
 require_relative '../../services/players.rb'
 require_relative '../../services/state.rb'
 
-class PlayersTest < Minitest::Test
+class PlayersTest < Minitest::Unit::TestCase
   ID = "id_test"
   CARDS = (1..6).to_a.map do |x|
     Model::Card.new(name: "card: #{x}", id: x,  cost: x, victory_points: x)

@@ -4,7 +4,7 @@ require_relative '../../models/card.rb'
 require_relative '../../models/stack.rb'
 require_relative '../../models/graveyard.rb'
 
-class PlayerTest < Minitest::Test
+class PlayerTest < Minitest::Unit::TestCase
   def test_draw
     card1 = Model::Card.new(name: "card test 1", id: 1, cost: 0, victory_points: 2)
     card2 = Model::Card.new(name: "card test 2", id: 2, cost: 0, victory_points: 4)

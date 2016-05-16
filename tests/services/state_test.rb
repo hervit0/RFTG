@@ -4,7 +4,7 @@ require_relative '../../services/state.rb'
 require_relative '../../models/board.rb'
 require_relative '../../errors.rb'
 
-class StateTest < Minitest::Test
+class StateTest < Minitest::Unit::TestCase
   CARDS = (1..6).to_a.map do |x|
     Model::Card.new(name: "card: #{x}", id: x,  cost: x, victory_points: x)
   end

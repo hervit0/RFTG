@@ -3,7 +3,7 @@ require 'minitest/autorun'
 require_relative '../../errors.rb'
 require_relative '../../control/session.rb'
 
-class SessionControlTest < Minitest::Test
+class SessionControlTest < Minitest::Unit::TestCase
   def self.setup_request(input:)
     env = Rack::MockRequest.env_for("", "REQUEST_METHOD" => "POST", "HTTP_COOKIE" => input)
     req = Rack::Request.new(env)

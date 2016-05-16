@@ -2,7 +2,7 @@ require 'minitest/autorun'
 require_relative '../../models/stack.rb'
 require_relative '../../models/card.rb'
 
-class StackTest < Minitest::Test
+class StackTest < Minitest::Unit::TestCase
   def test_from_cards
     card1 = {"name"=>"card 1", "quantity"=>1, "cost"=>0, "victory_points"=>1 }
     card2 = {"name"=>"card 2", "quantity"=>2, "cost"=>0, "victory_points"=>1 }

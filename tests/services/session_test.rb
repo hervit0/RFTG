@@ -2,7 +2,7 @@ require 'minitest/autorun'
 require 'rack'
 require_relative '../../services/session.rb'
 
-class SessionTest < Minitest::Test
+class SessionTest < Minitest::Unit::TestCase
   def test_next_action
     {1 => Router::Path::CHOOSE_PHASES,
      2 => Router::Path::INTRODUCE_PLAYER,
