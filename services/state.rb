@@ -7,16 +7,16 @@ require_relative '../models/tableau.rb'
 require_relative '../persistence/persistence.rb'
 
 module Service
-  ID = "id"
-  PLAYERS_NUMBER = "players_number"
-  PLAYERS = "players"
-  STACK = "stack"
-  GRAVEYARD = "graveyard"
-  NAME = "name"
-  HAND = "hand"
-  TABLEAU = "tableau"
-  COST = "cost"
-  VICTORY_POINTS = "victory_points"
+  ID = :id
+  PLAYERS_NUMBER = :players_number
+  PLAYERS = :players
+  STACK = :stack
+  GRAVEYARD = :graveyard
+  NAME = :name
+  HAND = :hand
+  TABLEAU = :tableau
+  COST = :cost
+  VICTORY_POINTS = :victory_points
 
   class State
     attr_reader :players, :stack, :graveyard
@@ -27,7 +27,7 @@ module Service
     end
 
     def self.marshal_players_number(players_number)
-      number = {PLAYERS_NUMBER => players_number}
+      { PLAYERS_NUMBER => players_number }
     end
 
     def self.players_number(state)
@@ -40,7 +40,7 @@ module Service
     end
 
     def marshal
-      state = {
+      {
         PLAYERS => Players.marshal_from(@players),
         STACK => Cards.marshal_from(@stack.cards),
         GRAVEYARD => Cards.marshal_from(@graveyard.cards)
@@ -72,10 +72,11 @@ module Service
   class Cards
     def self.marshal_from(cards)
       cards.map do |x|
-        {NAME => x.name,
-         ID => x.id,
-         COST => x.cost,
-         VICTORY_POINTS => x.victory_points
+        {
+          NAME => x.name,
+          ID => x.id,
+          COST => x.cost,
+          VICTORY_POINTS => x.victory_points
         }
       end
     end
@@ -95,9 +96,11 @@ module Service
   class Players
     def self.marshal_from(players)
       players.map do |x|
-        {NAME => x.name,
-         HAND => Cards.marshal_from(x.hand.cards),
-         TABLEAU => Cards.marshal_from(x.tableau.cards)}
+        {
+          NAME => x.name,
+          HAND => Cards.marshal_from(x.hand.cards),
+          TABLEAU => Cards.marshal_from(x.tableau.cards)
+        }
       end
     end
 

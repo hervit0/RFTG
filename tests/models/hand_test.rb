@@ -3,33 +3,34 @@ require_relative '../../models/card.rb'
 require_relative '../../models/hand.rb'
 
 class HandTest < Minitest::Unit::TestCase
-  def test_add_cards
-    card1 = Model::Card.new(name: "card test 1", id: 1, cost: 0, victory_points: 2)
-    card2 = Model::Card.new(name: "card test 2", id: 2, cost: 0, victory_points: 4)
-    card3 = Model::Card.new(name: "card test 3", id: 3, cost: 0, victory_points: 6)
-    card4 = Model::Card.new(name: "card test 4", id: 4, cost: 0, victory_points: 6)
+  def self.cards_set
+    (1..4).to_a.map do |x|
+      Model::Card.new(
+        name: "card test #{x}",
+        id: x,
+        cost: 0,
+        victory_points: x*2
+      )
+    end
+  end
 
-    cards = [card1, card2, card3]
-    extra = [card4]
+  def test_add_cards
+    cards = HandTest.cards_set.take(3)
+    extra_card = [HandTest.cards_set.last]
 
     hand = Model::Hand.new(cards)
 
-    new_hand = hand.add_cards(extra)
-    assert_equal [card1, card2, card3, card4], new_hand.cards
+    new_hand = hand.add_cards(extra_card)
+    assert_equal HandTest.cards_set.map(&:id), new_hand.cards.map(&:id)
   end
 
   def test_remove_cards
-    card1 = Model::Card.new(name: "card test 1", id: 1, cost: 0, victory_points: 2)
-    card2 = Model::Card.new(name: "card test 2", id: 2, cost: 0, victory_points: 4)
-    card3 = Model::Card.new(name: "card test 3", id: 3, cost: 0, victory_points: 6)
-    card4 = Model::Card.new(name: "card test 4", id: 4, cost: 0, victory_points: 6)
-
-    cards = [card1, card2, card3, card4]
+    cards = HandTest.cards_set
 
     hand = Model::Hand.new(cards)
 
     new_hand, discarded_cards = hand.remove_cards(1, 2)
-    assert_equal [card1, card2], discarded_cards
-    assert_equal [card3, card4], new_hand.cards
+    assert_equal HandTest.cards_set.take(2).map(&:id), discarded_cards.map(&:id)
+    assert_equal HandTest.cards_set.drop(2).map(&:id), new_hand.cards.map(&:id)
   end
 end

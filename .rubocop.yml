@@ -1,0 +1,13 @@
+AllCops:
+  TargetRubyVersion: 2.1
+  Exclude:
+    - 'views/*'
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/FormatString:
+  Enabled: false
+
+Documentation:
+  Enabled: false

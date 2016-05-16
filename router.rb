@@ -13,21 +13,21 @@ require_relative 'views/phases.rb'
 require_relative 'views/errors.rb'
 
 module Router
-  SESSION = "session"
-  SESSION_ID = "rftg1"
+  SESSION = :session
+  SESSION_ID = :rftg1
 
   module Method
-    POST = "POST"
-    GET = "GET"
+    POST = :POST
+    GET = :GET
   end
 
   module Path
-    PLAYERS_NAMES = "/players_names"
-    BEGIN_DISCARD = "/begin_discard"
-    INTRODUCE_PLAYER = "/introduce_player"
-    DISCARD = "/discard"
-    SHOW_KEPT_CARDS = "/show_kept_cards"
-    CHOOSE_PHASES = "/choose_phases"
+    PLAYERS_NAMES = '/players_names'.freeze
+    BEGIN_DISCARD = '/begin_discard'.freeze
+    INTRODUCE_PLAYER = '/introduce_player'.freeze
+    DISCARD = '/discard'.freeze
+    SHOW_KEPT_CARDS = '/show_kept_cards'.freeze
+    CHOOSE_PHASES = '/choose_phases'.freeze
   end
 
   class Controller
@@ -37,7 +37,7 @@ module Router
       @path = @request.path
       @id = Control::Session.id(@request)
 
-      view = select_view do |state|
+      select_view do |state|
         if key(Path::PLAYERS_NAMES, Method::POST)
           players_number = Control::State.players_number(@request)
           [Service::State.marshal_players_number(players_number),
@@ -99,25 +99,25 @@ module Router
     def self.error(error_type)
       errors_messages = {
         Error::EmptyPost =>
-        "No data received ! ",
+        'No data received !',
           Error::NoPlayersNames =>
-        "No name was given, so sad !",
+        'No name was given, so sad !',
           Error::NoCookieInRequest =>
-        "Problem about cookies, did you allow its?",
+        'Problem about cookies, did you allow its?',
           Error::NoSessionID =>
-        "Problem about session, did you allow cookies?",
+        'Problem about session, did you allow cookies?',
           Error::NotInteger =>
-        "Sorry, integer was excepted...",
+        'Sorry, integer was excepted...',
           Error::UnexpectedNumberOfInputs =>
-        "Did you send the correct number of inputs ?",
+        'Did you send the correct number of inputs ?',
           Error::UnexpectedNumberOfCards =>
-        "Did you choose 2 cards among 6 cards ?",
+        'Did you choose 2 cards among 6 cards ?',
           Error::TooManyPlayers =>
-        "Warning, RFTG is designed for only 4 players",
+        'Warning, RFTG is designed for only 4 players',
           Error::NotEnoughPlayers =>
-        "At least 2 players are expected.",
+        'At least 2 players are expected.',
           Error::UnavailableIndexOfCard =>
-        "Did you choose among the six cards ?"
+        'Did you choose among the six cards ?'
       }
 
       message = errors_messages.values_at(error_type).shift
