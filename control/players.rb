@@ -6,8 +6,9 @@ module Control
     def self.initial_cards(request)
       if request.POST != {}
         first_card, second_card = State.discarded_cards(request)
+        return first_card, second_card
       else
-       :empty
+        :empty
       end
     end
   end

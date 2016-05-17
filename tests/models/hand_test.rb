@@ -9,18 +9,18 @@ class HandTest < Minitest::Unit::TestCase
         name: "card test #{x}",
         id: x,
         cost: 0,
-        victory_points: x*2
+        victory_points: x * 2
       )
     end
   end
 
   def test_add_cards
     cards = HandTest.cards_set.take(3)
-    extra_card = [HandTest.cards_set.last]
+    extra_card = HandTest.cards_set.last
 
     hand = Model::Hand.new(cards)
 
-    new_hand = hand.add_cards(extra_card)
+    new_hand = hand.add_cards([extra_card])
     assert_equal HandTest.cards_set.map(&:id), new_hand.cards.map(&:id)
   end
 

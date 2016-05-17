@@ -1,17 +1,17 @@
 require_relative '../errors.rb'
 
 module Control
-  EXPECTED_INPUT_FOR_PLAYERS_NUMBER = 1
+  INPUT_PLAYERS_NUMBER = 1
   MAX_PLAYERS = 4
   MIN_PLAYERS = 0
-  NUMBER_OF_DISCARDED_CARDS = 2
+  NUMBER_DISCARDED_CARDS = 2
   AVAILABLE_INDEXES = (1..6).to_a
 
   class State
     def self.players_number(request)
       raise Error::EmptyPost if request.POST == {}
       result = request.POST.values
-      raise Error::UnexpectedNumberOfInputs if result.size != EXPECTED_INPUT_FOR_PLAYERS_NUMBER
+      raise Error::UnexpectedNumberOfInputs if result.size != INPUT_PLAYERS_NUMBER
       raise Error::NotInteger if result.first.to_i.to_s != result.first
       players_number = result.first.to_i
       raise Error::TooManyPlayers if players_number > MAX_PLAYERS
@@ -23,7 +23,7 @@ module Control
       raise Error::EmptyPost if request.POST == {}
       names = request.POST.values
       names.each do |name|
-        raise Error::NoPlayersNames if name.delete(" ").empty?
+        raise Error::NoPlayersNames if name.delete(' ').empty?
       end
       names
     end
@@ -31,14 +31,14 @@ module Control
     def self.discarded_cards(request)
       raise Error::EmptyPost if request.POST == {}
       result = request.POST.values
-      raise Error::UnexpectedNumberOfCards if result.size != NUMBER_OF_DISCARDED_CARDS
+      raise Error::UnexpectedNumberOfCards if result.size != NUMBER_DISCARDED_CARDS
       result.each do |x|
         raise Error::NotInteger if x.to_i.to_s != x
       end
       result.each do |x|
         raise Error::UnavailableIndexOfCard unless AVAILABLE_INDEXES.include?(x.to_i)
       end
-      request.POST.values.map{ |x| x.to_i }
+      request.POST.values.map(&:to_i)
     end
   end
 end

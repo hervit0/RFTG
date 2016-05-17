@@ -6,17 +6,18 @@ require_relative '../../errors.rb'
 
 class StateTest < Minitest::Unit::TestCase
   CARDS = (1..6).to_a.map do |x|
-    Model::Card.new(name: "card: #{x}", id: x,  cost: x, victory_points: x)
+    Model::Card.new(name: "card: #{x}", id: x, cost: x, victory_points: x)
   end
   PLAYERS = [
     Model::Player.new('player 1', Model::Hand.empty, Model::Tableau.empty),
-    Model::Player.new('player 2', Model::Hand.new(CARDS), Model::Tableau.empty)]
+    Model::Player.new('player 2', Model::Hand.new(CARDS), Model::Tableau.empty)
+  ].freeze
   STACK = Model::Stack.new([])
   GRAVEYARD = Model::Graveyard.empty
   STATE = Service::State.new(PLAYERS, STACK, GRAVEYARD)
 
   def test_initialize_game
-    names = ['boule', 'bill']
+    names = %w(boule bill)
     state_marshalled = Service::State.initialize_game(names)
     state = Service::State.unmarshal(state_marshalled)
 

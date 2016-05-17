@@ -10,4 +10,3 @@ group :test do
   gem 'rake', require: nil
   gem 'codeclimate-test-reporter', require: nil
 end
-

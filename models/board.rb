@@ -8,7 +8,8 @@ require_relative 'card.rb'
 
 module Model
   INITIAL_NUMBER_CARDS = 6
-  CARDS = YAML.load(File.read(File.join(File.expand_path(File.dirname(__FILE__)),"cards.yml")))
+  FILE = File.join(File.expand_path(File.dirname(__FILE__)), 'cards.yml')
+  CARDS = YAML.load(File.read(FILE))
 
   class Board
     attr_reader :players, :stack, :graveyard
@@ -41,11 +42,13 @@ module Model
       @players[player_index]
     end
 
-    def make_player_discard(first_card, second_card)
-      player = self.next_player_to_discard
-      new_player, new_graveyard = player.choose_first_cards(@graveyard, first_card, second_card)
+    def make_player_discard(card1, card2)
+      player = next_player_to_discard
+      new_player, new_graveyard = player.choose_cards(@graveyard, card1, card2)
       index_player = @players.index(player)
-      new_players = @players.map.with_index { |x, i| i == index_player ? new_player : x }
+      new_players = @players.map.with_index do |x, i|
+        i == index_player ? new_player : x
+      end
       Board.new(new_players, @stack, new_graveyard)
     end
   end

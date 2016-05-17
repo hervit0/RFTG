@@ -19,16 +19,16 @@ module Model
           victory_points: x['victory_points']
         )
       end
+
       Model::Stack.new(first_cards)
     end
 
     def draw(number)
       drawn_cards = @cards.sample(number)
-      identities_drawn = drawn_cards.map{ |x| x.id }
-      new_stack = @cards.reject{|x| identities_drawn.include?(x.id)}
+      identities_drawn = drawn_cards.map(&:id)
+      new_stack = @cards.reject { |x| identities_drawn.include?(x.id) }
 
       [Model::Stack.new(new_stack), drawn_cards]
     end
-    #feature: add graveyard if the stack is empty
   end
 end

@@ -12,7 +12,7 @@ module Model
     end
 
     def victory_points
-      @cards.reduce(0){ |acc, ite| acc + ite.victory_points }
+      @cards.reduce(0) { |a, e| a + e.victory_points }
     end
   end
 end

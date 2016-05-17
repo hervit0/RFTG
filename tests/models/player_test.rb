@@ -5,12 +5,19 @@ require_relative '../../models/stack.rb'
 require_relative '../../models/graveyard.rb'
 
 class PlayerTest < Minitest::Unit::TestCase
-  def test_draw
-    card1 = Model::Card.new(name: "card test 1", id: 1, cost: 0, victory_points: 2)
-    card2 = Model::Card.new(name: 'card test 2', id: 2, cost: 0, victory_points: 4)
-    card3 = Model::Card.new(name: 'card test 3', id: 3, cost: 0, victory_points: 6)
-    cards = [card1, card2, card3]
+  def self.cards_set
+    (1..3).to_a.map do |x|
+      Model::Card.new(
+        name: "card test #{x}",
+        id: x,
+        cost: 0,
+        victory_points: x * 2
+      )
+    end
+  end
 
+  def test_draw
+    cards = PlayerTest.cards_set
     stack = Model::Stack.new(cards)
     hand = Model::Hand.new([])
     tableau = Model::Tableau.new([])
@@ -18,7 +25,9 @@ class PlayerTest < Minitest::Unit::TestCase
 
     new_player, _new_stack = player.draw(3, stack)
     cards_hand = new_player.hand.cards
-    organized_hand = (1..3).map{|x| cards_hand.reject{|y| y.id != x} }.flatten
+    organized_hand = (1..3).flat_map do |x|
+      cards_hand.reject { |y| y.id != x }
+    end
 
     assert_equal cards, organized_hand
   end
@@ -29,7 +38,7 @@ class PlayerTest < Minitest::Unit::TestCase
     graveyard = Model::Graveyard.new([7])
     player = Model::Player.new('player', hand, tableau)
 
-    new_player, new_graveyard = player.choose_first_cards(graveyard, 1, 2)
+    new_player, new_graveyard = player.choose_cards(graveyard, 1, 2)
 
     assert_equal [3], new_player.hand.cards
     assert_equal [7, 1, 2], new_graveyard.cards

@@ -5,7 +5,7 @@ module Control
   class Session
     def self.id(request)
       raise Error::NoCookieInRequest if request.cookies == {}
-      raise Error::NoSessionID unless request.cookies.has_key?(Router::SESSION)
+      raise Error::NoSessionID unless request.cookies.key?(Router::SESSION)
       request.cookies[Router::SESSION]
     end
   end

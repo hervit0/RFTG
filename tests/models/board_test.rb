@@ -3,17 +3,18 @@ require_relative '../../models/board.rb'
 
 class BoardTest < Minitest::Unit::TestCase
   CARDS = (1..6).to_a.map do |x|
-    Model::Card.new(name: 'card: #{x}', id: x,  cost: x, victory_points: x)
+    Model::Card.new(name: "card: #{x}", id: x, cost: x, victory_points: x)
   end
   PLAYERS = [
     Model::Player.new('player 1', Model::Hand.empty, Model::Tableau.empty),
-    Model::Player.new('player 2', Model::Hand.new(CARDS), Model::Tableau.empty)]
+    Model::Player.new('player 2', Model::Hand.new(CARDS), Model::Tableau.empty)
+  ].freeze
   STACK = Model::Stack.new([])
   GRAVEYARD = Model::Graveyard.empty
-    BOARD = Model::Board.new(PLAYERS, STACK, GRAVEYARD)
+  BOARD = Model::Board.new(PLAYERS, STACK, GRAVEYARD)
 
   def test_initialize_game
-    players_names = ['boule', 'bill']
+    players_names = %w(boule bill)
     board = Model::Board.initialize_game(players_names)
 
     assert_equal('Boule', board.players[0].name)

@@ -6,7 +6,7 @@ module Model
       @order = order
     end
 
-    PHASES_NAMES = ["explore", "develop", "settle", "consume", "produce"]
+    PHASES_NAMES = %w(explore develop settle consume produce).map(&:freeze)
 
     def name
       PHASES_NAMES[@order]
