@@ -25,11 +25,13 @@ module Model
       hand = Model::Hand.empty
       tableau = Model::Hand.empty
 
-      [[], Mode]
-      players, stack = names_capitalized.reduce([[], Model::Stack.from_cards(CARDS)]) do |ac, it|
-        new_player, new_stack = Model::Player.new(it, hand, tableau).draw(INITIAL_NUMBER_CARDS, ac.last)
+      initial_state = [[], Model::Stack.from_cards(CARDS)]
+      players, stack = names_capitalized.reduce(initial_state) do |ac, it|
+        empty_player = Model::Player.new(it, hand, tableau)
+        new_player, new_stack = empty_player.draw(INITIAL_NUMBER_CARDS, ac.last)
         [ac.first + [new_player], new_stack]
       end
+
       Board.new(players, stack, graveyard)
     end
 

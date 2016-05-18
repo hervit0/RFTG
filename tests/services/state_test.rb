@@ -35,16 +35,20 @@ class StateTest < Minitest::Unit::TestCase
   def test_marshal_unmarshal
     state_marshalled = STATE.marshal
     state_test = Service::State.unmarshal(state_marshalled)
+    player1, player2 = state_test.players
 
-    assert_equal('player 1', state_test.players[0].name)
-    assert_equal('player 2', state_test.players[1].name)
-    assert_equal([], state_test.players[0].hand.cards)
-    assert_equal('card: 1', state_test.players[1].hand.cards[0].name)
-    assert_equal(2, state_test.players[1].hand.cards[1].id)
-    assert_equal(3, state_test.players[1].hand.cards[2].cost)
-    assert_equal(4, state_test.players[1].hand.cards[3].victory_points)
-    assert_equal([], state_test.players[0].tableau.cards)
-    assert_equal([], state_test.players[1].tableau.cards)
+    assert_equal('player 1', player1.name)
+    assert_equal('player 2', player2.name)
+    assert_equal([], player1.hand.cards)
+
+    hand_player2 = player2.hand
+    assert_equal('card: 1', hand_player2.cards[0].name)
+    assert_equal(2, hand_player2.cards[1].id)
+    assert_equal(3, hand_player2.cards[2].cost)
+    assert_equal(4, hand_player2.cards[3].victory_points)
+
+    assert_equal([], player1.tableau.cards)
+    assert_equal([], player2.tableau.cards)
     assert_equal([], state_test.stack.cards)
     assert_equal([], state_test.graveyard.cards)
   end
