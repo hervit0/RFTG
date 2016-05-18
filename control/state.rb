@@ -11,7 +11,8 @@ module Control
     def self.players_number(request)
       raise Error::EmptyPost if request.POST == {}
       result = request.POST.values
-      raise Error::UnexpectedNumberOfInputs if result.size != INPUT_PLAYERS_NUMBER
+      check_input = result.size != INPUT_PLAYERS_NUMBER
+      raise Error::UnexpectedNumberOfInputs if check_input
       raise Error::NotInteger if result.first.to_i.to_s != result.first
       players_number = result.first.to_i
       raise Error::TooManyPlayers if players_number > MAX_PLAYERS
@@ -31,12 +32,14 @@ module Control
     def self.discarded_cards(request)
       raise Error::EmptyPost if request.POST == {}
       result = request.POST.values
-      raise Error::UnexpectedNumberOfCards if result.size != NUMBER_DISCARDED_CARDS
+      check_input = result.size != NUMBER_DISCARDED_CARDS
+      raise Error::UnexpectedNumberOfCards if check_input
       result.each do |x|
         raise Error::NotInteger if x.to_i.to_s != x
       end
       result.each do |x|
-        raise Error::UnavailableIndexOfCard unless AVAILABLE_INDEXES.include?(x.to_i)
+        check_indexes = AVAILABLE_INDEXES.include?(x.to_i)
+        raise Error::UnavailableIndexOfCard unless check_indexes
       end
       request.POST.values.map(&:to_i)
     end

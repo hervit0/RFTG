@@ -7,16 +7,16 @@ require_relative '../models/tableau.rb'
 require_relative '../persistence/persistence.rb'
 
 module Service
-  ID = :id
-  PLAYERS_NUMBER = :players_number
-  PLAYERS = :players
-  STACK = :stack
-  GRAVEYARD = :graveyard
-  NAME = :name
-  HAND = :hand
-  TABLEAU = :tableau
-  COST = :cost
-  VICTORY_POINTS = :victory_points
+  ID = 'id'.freeze
+  PLAYERS_NUMBER = 'players_number'.freeze
+  PLAYERS = 'players'.freeze
+  STACK = 'stack'.freeze
+  GRAVEYARD = 'graveyard'.freeze
+  NAME = 'name'.freeze
+  HAND = 'hand'.freeze
+  TABLEAU = 'tableau'.freeze
+  COST = 'cost'.freeze
+  VICTORY_POINTS = 'victory_points'.freeze
 
   class State
     attr_reader :players, :stack, :graveyard

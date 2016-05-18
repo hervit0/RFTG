@@ -3,6 +3,19 @@ require_relative '../../models/stack.rb'
 require_relative '../../models/card.rb'
 
 class StackTest < Minitest::Unit::TestCase
+  NUMBER = 4
+
+  def self.cards_set
+    (1..NUMBER).to_a.map do |x|
+      Model::Card.new(
+        name: "card #{x}",
+        id: x,
+        cost: x,
+        victory_points: x
+      )
+    end
+  end
+
   def test_from_cards
     cards = (1..4).to_a.map do |x|
       {
@@ -23,25 +36,17 @@ class StackTest < Minitest::Unit::TestCase
   end
 
   def test_draw
-    number = 4
-    cards = (1..number).to_a.map do |x|
-      Model::Card.new(
-        name: "card #{x}",
-        id: x,
-        cost: 0,
-        victory_points: x * 2
-      )
-    end
+    cards = StackTest.cards_set
     stack = Model::Stack.new(cards)
 
     new_stack1, _drawn_cards1 = stack.draw(0)
-    new_stack2, _drawn_cards2 = stack.draw(4)
-    _new_stack3, drawn_cards3 = stack.draw((1..number).to_a.sample)
+    new_stack2, _drawn_cards2 = stack.draw(NUMBER)
+    _new_stack3, drawn_cards3 = stack.draw((1..NUMBER).to_a.sample)
 
     assert_equal cards, new_stack1.cards
     assert_equal [], new_stack2.cards
     drawn_cards3.map(&:id).each do |id|
-      assert_includes (1..number).to_a, id
+      assert_includes (1..NUMBER).to_a, id
     end
   end
 end

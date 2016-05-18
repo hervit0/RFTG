@@ -1,13 +1,9 @@
 language: ruby
-
 rvm:
-  - 2.1.5
-
+- 2.1.5
 services: mongodb
-
 gemfile:
-  - Gemfile
-
+- Gemfile
 addons:
   code_climate:
-    repo_token: b3a9aaf67f6377c67ed7d183154e94dd3bd5204c90b02bad080dc98e5bd38a8d bundle exec rake
+    repo_token: bmwLywEjWkImXo4KK3JLhvGPPz049Zq8f9fb3CEWI0pxloVQIMoUfmhSiqOcsjW5sHud4nNHv3j7OykJi1UrCI8SMg74+Ie7q8YTzfKi/NJBQ0LLZpowux7F1SAKhZdMIv/n9a5XNBDN16MnkXrjQXkZVcuDltsd3kuK/9nLzvtwwKdaNsVC+vccL/dgZlVPJptpO9tcMt767gwATD+8MdVu1i7VYz7Zj7TDeEC3AcsPFh1FUPUstqyaeEThJBRaM0RjRHOh1Hj/LVUy+YBCwhbsOyY6DIjXr8ebCho0vOijJIkdhwMiuqazR3ZCr7ChJU7LQG7CZE7Wfs9qxm67WeR13lSrB1/ELlk0x+vZsa795qLBVnUYJzROXfn2+hDCQ2AFS33GR9zYaKESw0kpM+zVvJl5BNR0LRjSlou/ehL+NUbS4ueGLcnuL+W09S4xweoXNq8jurTX6pg4LyET6BC7u7b5aN6C3h+UCL9U/o1an+bqZ8/sIvXnwMBQ/3jOZgNQAPF4mm38w7nRbs3i2F0WWNeQpPWeqJhBnFMgx6pNoW6rfnw+LNWy/ZDy7n1C6hzHCpdzHud+uQIvR658bq72mm9jzTiip5mVzc1lckF53f7g74UNZNNrWRXb89TJIuq++KatbGDRSmPZw4Ony6c5MDVdwo5noY8CtlylJhs=

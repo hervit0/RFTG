@@ -13,12 +13,12 @@ require_relative 'views/phases.rb'
 require_relative 'views/errors.rb'
 
 module Router
-  SESSION = :session
-  SESSION_ID = :rftg1
+  SESSION = 'session'.freeze
+  SESSION_ID = 'rftg1'.freeze
 
   module Method
-    POST = :POST
-    GET = :GET
+    POST = 'POST'.freeze
+    GET = 'GET'.freeze
   end
 
   module Path
@@ -31,6 +31,13 @@ module Router
   end
 
   class Controller
+    def self.define_headers
+      {
+        'Content-Type' => 'text/html',
+        'Set-Cookie' => "#{SESSION}=#{SESSION_ID}"
+      }
+    end
+
     def self.select_body(env)
       @request = Rack::Request.new(env)
       @method = @request.request_method
@@ -94,6 +101,14 @@ module Router
       new_state, view = yield state
       Persistence::Storage.new(Settings::STORAGE_TYPE).save_state(@id, new_state)
       view
+    end
+
+    def self.select_status(method)
+      if method == Method::POST
+        302
+      else
+        200
+      end
     end
 
     def self.error(error_type)
