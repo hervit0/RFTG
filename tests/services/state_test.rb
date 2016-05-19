@@ -41,11 +41,11 @@ class StateTest < Minitest::Unit::TestCase
     assert_equal('player 2', player2.name)
     assert_equal([], player1.hand.cards)
 
-    hand_player2 = player2.hand
-    assert_equal('card: 1', hand_player2.cards[0].name)
-    assert_equal(2, hand_player2.cards[1].id)
-    assert_equal(3, hand_player2.cards[2].cost)
-    assert_equal(4, hand_player2.cards[3].victory_points)
+    hand_player2 = player2.hand.cards
+    assert_equal('card: 1', hand_player2[0].name)
+    assert_equal(2, hand_player2[1].id)
+    assert_equal(3, hand_player2[2].cost)
+    assert_equal(4, hand_player2[3].victory_points)
 
     assert_equal([], player1.tableau.cards)
     assert_equal([], player2.tableau.cards)
