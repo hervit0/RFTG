@@ -1,9 +1,11 @@
 require 'mongo'
+require 'yaml'
 
 module Persistence
   class MongoStore
     def self.connection_from_id(id)
-      host = ['127.0.0.1:27017']
+      host = ENV['MONGODB_URI'] || ['127.0.0.1:27017']
+
       client = Mongo::Client.new(host)
       client.use("db_#{id}").database.fs
     end
