@@ -6,19 +6,17 @@ module Persistence
     def self.connection_from_id(id)
       host = ENV['MONGODB_URI'] || ['127.0.0.1:27017']
 
-      client = Mongo::Client.new(host)
-      client.use("db_#{id}").database.fs
+      Mongo::Client.new(host, database: 'rftg')
     end
 
-    def self.save(id, state)
+    def self.save(state)
       collection = MongoStore.connection_from_id(id)
-      collection.upload_from_stream("#{id}.yml", state.to_yaml)
+      collection.insert_one(state)
     end
 
     def self.read(id)
       collection = MongoStore.connection_from_id(id)
-      state = collection.open_download_stream_by_name("#{id}.yml")
-      YAML.load(state.read)
+      collection.find.first
     end
   end
 
